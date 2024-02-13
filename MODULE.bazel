@@ -1,0 +1,32 @@
+"Laboratory software environment"
+
+module(
+    name = "blab",
+    version = "1.0",
+)
+
+# Java dependecies
+bazel_dep(name = "rules_jvm_external", version = "6.0")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        # General dependencies
+        #  Serialization
+        "org.apache.avro:avro:1.11.3",
+
+        #  Testing
+        "org.junit.jupiter:junit-jupiter-api:5.10.2",
+
+        #  Logging
+        "org.slf4j:slf4j-api:2.0.12",
+        "org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1",
+
+        # Projects dependencies
+    ],
+    repositories = [
+        "https://repo1.maven.org/maven2",
+    ],
+)
+
+use_repo(maven, "maven")
