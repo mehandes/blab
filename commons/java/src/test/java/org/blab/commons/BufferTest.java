@@ -1,3 +1,7 @@
 package org.blab.commons;
 
-public class BufferTest {}
+import org.junit.Test;
+
+public class BufferTest {
+
+}

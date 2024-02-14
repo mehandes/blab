@@ -1,10 +1,10 @@
 {
     "java.project.sourcePaths": [
-        "types/java/src/main/java",
         "types/java/src/test/java",
+        "types/java/src/main/java",
         "commons/java/src/main/java",
-        "commons/java/src/test/java",
         "blender/river/core/src/main/java",
+        "commons/java/src/test/java"
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
