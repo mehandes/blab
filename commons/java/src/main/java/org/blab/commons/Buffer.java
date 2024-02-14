@@ -1,241 +1,319 @@
 package org.blab.commons;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * A {@link BlockingQueue} that override {@link #drainTo(Collection)} and
- * {@link #drainTo(Collection, int)} operations, so that they waitinig buffer to become full.
+ * A {@link BlockingQueue} that override {@link #drainTo(Collection, int)} operation meaning.
  * 
- * <p>
- * If there isn't capacity restriction, capacity doubled if {@link #size} > 0.75 *
- * {@link #capacity}.
- * </p>
- * 
- * @author Ivan Paraskun
  * @param <T> the type of elements held in this buffer
  */
 public class Buffer<T> implements BlockingQueue<T> {
-  /** The array into which the elements are stored. */
-  private Object[] data;
+  private final Queue<T> data;
 
-  /**
-   * Buffer's maximum size. If there isn't capacity restrictions, grows dynamically with initial
-   * value 10.
-   */
-  private int capacity;
+  private final ReentrantLock lock;
+  private final Condition notEmpty;
 
-  /** Current number of elements in buffer. */
-  private int size;
-
-  /** Indicating wether buffer static or not. */
-  private boolean isStatic;
-
-  private ReentrantLock readLock;
-
-  private ReentrantLock writeLock;
-
-  private Condition isFull;
-
-  private Buffer(int capacity, boolean isStatic) {
-    if (capacity <= 0)
-      throw new IllegalArgumentException("Capacity must be positive integer.");
-
-    this.isStatic = isStatic;
-    this.capacity = capacity;
-    this.data = new Object[this.capacity];
-    this.size = 0;
-    this.readLock = new ReentrantLock();
-    this.writeLock = new ReentrantLock();
-    this.isFull = writeLock.newCondition();
-  }
-
-  /** Construct dynamic buffer with growing capacity. */
   public Buffer() {
-    this(10, false);
-  }
-
-  /**
-   * Construct static buffer with fixed capacity.
-   * 
-   * @param capacity - buffer's maximum size
-   * @throws IllegalArgumentException if capacity not positive
-   */
-  public Buffer(int capacity) {
-    this(capacity, true);
-  }
-
-  private void push(T element) {
-    if (size == capacity)
-      if (isStatic)
-        throw new IllegalStateException("Buffer is full.");
-      else
-        grow();
-
-    data[size++] = element;
-  }
-
-  private void grow() {
-    var doubled = new Object[capacity *= 2];
-
-    for (int i = 0; i < size; i++)
-      doubled[i] = data[i];
-
-    data = doubled;
-  }
-
-  @Override
-  public T remove() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'remove'");
-  }
-
-  @Override
-  public T poll() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'poll'");
-  }
-
-  @Override
-  public T element() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'element'");
-  }
-
-  @Override
-  public T peek() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'peek'");
+    this.data = new LinkedList<>();
+    this.lock = new ReentrantLock();
+    this.notEmpty = this.lock.newCondition();
   }
 
   @Override
   public int size() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'size'");
-  }
+    lock.lock();
 
-  @Override
-  public boolean isEmpty() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
-  }
-
-  @Override
-  public Iterator<T> iterator() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'iterator'");
-  }
-
-  @Override
-  public Object[] toArray() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'toArray'");
-  }
-
-  @Override
-  public <T> T[] toArray(T[] a) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'toArray'");
-  }
-
-  @Override
-  public boolean containsAll(Collection<?> c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'containsAll'");
-  }
-
-  @Override
-  public boolean addAll(Collection<? extends T> c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'addAll'");
-  }
-
-  @Override
-  public boolean removeAll(Collection<?> c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'removeAll'");
-  }
-
-  @Override
-  public boolean retainAll(Collection<?> c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'retainAll'");
-  }
-
-  @Override
-  public void clear() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'clear'");
-  }
-
-  @Override
-  public boolean add(T e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'add'");
-  }
-
-  @Override
-  public boolean offer(T e) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'offer'");
-  }
-
-  @Override
-  public void put(T e) throws InterruptedException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'put'");
-  }
-
-  @Override
-  public boolean offer(T e, long timeout, TimeUnit unit) throws InterruptedException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'offer'");
-  }
-
-  @Override
-  public T take() throws InterruptedException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'take'");
-  }
-
-  @Override
-  public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'poll'");
+    try {
+      return data.size();
+    } finally {
+      lock.unlock();
+    }
   }
 
   @Override
   public int remainingCapacity() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'remainingCapacity'");
+    return Integer.MAX_VALUE;
   }
 
   @Override
-  public boolean remove(Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'remove'");
+  public boolean isEmpty() {
+    lock.lock();
+
+    try {
+      return data.isEmpty();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public Object[] toArray() {
+    lock.lock();
+
+    try {
+      return data.toArray();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @SuppressWarnings("hiding")
+  @Override
+  public <T> T[] toArray(T[] a) {
+    lock.lock();
+
+    try {
+      return data.toArray(a);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+
+  @Override
+  public Iterator<T> iterator() {
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean contains(Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'contains'");
+    lock.lock();
+
+    try {
+      return data.contains(o);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean containsAll(Collection<?> c) {
+    lock.lock();
+
+    try {
+      return data.containsAll(c);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public T element() {
+    lock.lock();
+
+    try {
+      return data.element();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public T peek() {
+    lock.lock();
+
+    try {
+      return data.element();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public T poll() {
+    lock.lock();
+
+    try {
+      return data.poll();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public T poll(long timeout, TimeUnit unit) throws InterruptedException {
+    lock.lock();
+
+    try {
+      boolean r = true;
+
+      if (data.size() == 0)
+        r = notEmpty.await(timeout, unit);
+
+      return r ? data.poll() : null;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public T take() throws InterruptedException {
+    lock.lock();
+
+    try {
+      if (data.size() == 0)
+        notEmpty.await();
+
+      return data.poll();
+    } finally {
+      lock.unlock();
+    }
   }
 
   @Override
   public int drainTo(Collection<? super T> c) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'drainTo'");
+    lock.lock();
+
+    try {
+      return drain(c, data.size());
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  /**
+   * Waits until given number of elements become available and then moves them into given
+   * collection.
+   */
+  @Override
+  public int drainTo(Collection<? super T> c, int maxElements) {
+    lock.lock();
+
+    try {
+      while (data.size() < maxElements)
+        notEmpty.awaitUninterruptibly();
+
+      return drain(c, data.size());
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  private int drain(Collection<? super T> c, int maxElements) {
+    List<T> l = new ArrayList<>(maxElements);
+
+    for (int i = 0; i < maxElements; ++i)
+      l.add(data.poll());
+
+    for (int i = maxElements - 1; i >= 0; --i)
+      c.add(l.get(i));
+
+    return maxElements;
   }
 
   @Override
-  public int drainTo(Collection<? super T> c, int maxElements) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'drainTo'");
+  public T remove() {
+    lock.lock();
+
+    try {
+      return data.remove();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean remove(Object o) {
+    lock.lock();
+
+    try {
+      return data.remove(o);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean removeAll(Collection<?> c) {
+    lock.lock();
+
+    try {
+      return data.removeAll(c);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean retainAll(Collection<?> c) {
+    lock.lock();
+
+    try {
+      return data.retainAll(c);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public void clear() {
+    lock.lock();
+
+    try {
+      data.clear();
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean add(T e) {
+    lock.lock();
+
+    try {
+      boolean r = data.add(e);
+      notEmpty.signalAll();
+      return r;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean addAll(Collection<? extends T> c) {
+    lock.lock();
+
+    try {
+      boolean r = data.addAll(c);
+      notEmpty.signalAll();
+      return r;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean offer(T e) {
+    lock.lock();
+
+    try {
+      boolean r = data.offer(e);
+
+      if (r)
+        notEmpty.signalAll();
+
+      return r;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  @Override
+  public boolean offer(T e, long timeout, TimeUnit unit) throws InterruptedException {
+    return offer(e);
+  }
+
+  @Override
+  public void put(T e) throws InterruptedException {
+    offer(e);
   }
 }
