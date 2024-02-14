@@ -2,19 +2,92 @@ package org.blab.commons;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A {@link BlockingQueue} that override {@link #drainTo(Collection)} and
- * {@link #drainTo(Collection, int)} operations, so that they become waiting.
+ * {@link #drainTo(Collection, int)} operations, so that they waitinig buffer to become full.
+ * 
+ * <p>
+ * If there isn't capacity restriction, capacity doubled if {@link #size} > 0.75 *
+ * {@link #capacity}.
+ * </p>
  * 
  * @author Ivan Paraskun
  * @param <T> the type of elements held in this buffer
  */
 public class Buffer<T> implements BlockingQueue<T> {
-  private List<T> storage;
+  /** The array into which the elements are stored. */
+  private Object[] data;
+
+  /**
+   * Buffer's maximum size. If there isn't capacity restrictions, grows dynamically with initial
+   * value 10.
+   */
+  private int capacity;
+
+  /** Current number of elements in buffer. */
+  private int size;
+
+  /** Indicating wether buffer static or not. */
+  private boolean isStatic;
+
+  private ReentrantLock readLock;
+
+  private ReentrantLock writeLock;
+
+  private Condition isFull;
+
+  private Buffer(int capacity, boolean isStatic) {
+    if (capacity <= 0)
+      throw new IllegalArgumentException("Capacity must be positive integer.");
+
+    this.isStatic = isStatic;
+    this.capacity = capacity;
+    this.data = new Object[this.capacity];
+    this.size = 0;
+    this.readLock = new ReentrantLock();
+    this.writeLock = new ReentrantLock();
+    this.isFull = writeLock.newCondition();
+  }
+
+  /** Construct dynamic buffer with growing capacity. */
+  public Buffer() {
+    this(10, false);
+  }
+
+  /**
+   * Construct static buffer with fixed capacity.
+   * 
+   * @param capacity - buffer's maximum size
+   * @throws IllegalArgumentException if capacity not positive
+   */
+  public Buffer(int capacity) {
+    this(capacity, true);
+  }
+
+  private void push(T element) {
+    if (size == capacity)
+      if (isStatic)
+        throw new IllegalStateException("Buffer is full.");
+      else
+        grow();
+
+    data[size++] = element;
+  }
+
+  private void grow() {
+    var doubled = new Object[capacity *= 2];
+
+    for (int i = 0; i < size; i++)
+      doubled[i] = data[i];
+
+    data = doubled;
+  }
 
   @Override
   public T remove() {
