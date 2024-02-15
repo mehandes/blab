@@ -1,4 +1,4 @@
-"Laboratory software environment"
+"Laboratory shell"
 
 module(
     name = "blab",
