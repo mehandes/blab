@@ -190,9 +190,11 @@ public class Buffer<T> implements BlockingQueue<T> {
 
     try {
       while (data.size() < maxElements)
-        notEmpty.awaitUninterruptibly();
+        notEmpty.await();
 
-      return drain(c, data.size());
+      return drain(c, maxElements);
+    } catch (InterruptedException e) {
+      return 0;
     } finally {
       lock.unlock();
     }

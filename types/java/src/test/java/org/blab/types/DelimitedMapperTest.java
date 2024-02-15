@@ -1,90 +1,85 @@
 package org.blab.types;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class DelimitedMapperTest {
-    @Test
-    public void createWithPropertiesOk() {
+  @Test
+  public void createWithProperties() {
 
-    }
+  }
 
-    @Test
-    public void createWithNullPropertiesException() {
+  @Test
+  public void createWithoutProperties() {
 
-    }
+  }
 
-    @Test
-    public void createWithoutRequiredPropertiesException() {
+  @Test
+  public void createWithoutRequiredProperties() {
 
-    }
+  }
 
-    @Test
-    public void createWithEmptyRequiredPropertiesException() {
+  @Test
+  public void createWithEmptyRequiredProperties() {
 
-    }
+  }
 
-    @Test
-    public void mapToBytesOk() {
+  @Test
+  public void mapToBytes() {
 
-    }
+  }
 
-    @Test
-    public void mapToBytesNullObjectException() {
+  @Test
+  public void mapToBytesNullObject() {
 
-    }
+  }
 
-    @Test
-    public void mapFromBytesOk() {
+  @Test
+  public void mapFromBytes() {
 
-    }
+  }
 
-    @Test
-    public void mapFromBytesNullBytesArrayException() {
+  @Test
+  public void mapFromBytesNullBytesArray() {
 
-    }
+  }
 
-    @Test
-    public void mapFromBytesEmptryBytesArrayException() {
+  @Test
+  public void mapFromBytesEmptyBytesArray() {
 
-    }
+  }
 
-    @Test
-    public void mapToAvroOk() {
+  @Test
+  public void mapToAvro() {
 
-    }
+  }
 
-    @Test
-    public void mapToAvroNullSchemaException() {
+  @Test
+  public void mapToAvroNullSchema() {
 
-    }
+  }
 
-    @Test
-    public void mapToAvroNullObjectException() {
+  @Test
+  public void mapToAvroNullObject() {
 
-    }
+  }
 
-    @Test
-    public void mapToAvroUnsupportedSchemaException() {
+  @Test
+  public void mapToAvroUnsupportedSchema() {
 
-    }
+  }
 
-    @Test
-    public void mapToAvroObjectFieldMissingException() {
+  @Test
+  public void mapToAvroObjectDoesNotSufisfySchema() {
 
-    }
+  }
 
-    @Test
-    public void mapToAvroObjectFieldIncorrectException() {
+  @Test
+  public void mapFromAvro() {
 
-    }
+  }
 
-    @Test
-    public void mapFromAvroOk() {
+  @Test
+  public void mapFromAvroUnsupportedSchema() {
 
-    }
-
-    @Test
-    public void mapFromAvroUnsupportedSchemaException() {
-
-    }
+  }
 }
