@@ -13,7 +13,7 @@ java_test(
     test_class = "org.blab.types.DelimitedMapperTest",
     deps = [
         ":core",
-        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:junit_junit",
     ],
 )
 
@@ -23,7 +23,7 @@ java_test(
     test_class = "org.blab.types.JsonMapperTest",
     deps = [
         ":core",
-        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:junit_junit",
     ],
 )
 
@@ -33,6 +33,6 @@ java_test(
     test_class = "org.blab.types.CsvMapperTest",
     deps = [
         ":core",
-        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:junit_junit",
     ],
 )

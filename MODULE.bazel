@@ -16,7 +16,7 @@ maven.install(
         "org.apache.avro:avro:1.11.3",
 
         #  Testing
-        "org.junit.jupiter:junit-jupiter-api:5.10.2",
+        "junit:junit:4.13.2",
 
         #  Logging
         "org.slf4j:slf4j-api:2.0.12",

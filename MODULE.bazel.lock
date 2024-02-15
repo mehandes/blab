@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "2ea84c229791b9eed3f0663bf1412021a896312261e1de28daee36ac18c2cb81",
+  "moduleFileHash": "166700068e7b0f512d8d29372b952b4a9faff58b55af6a01270099cd91e6b39a",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -43,7 +43,7 @@
               "attributeValues": {
                 "artifacts": [
                   "org.apache.avro:avro:1.11.3",
-                  "org.junit.jupiter:junit-jupiter-api:5.10.2",
+                  "junit:junit:4.13.2",
                   "org.slf4j:slf4j-api:2.0.12",
                   "org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1"
                 ],
@@ -3078,7 +3078,7 @@
               ],
               "artifacts": [
                 "{ \"group\": \"org.apache.avro\", \"artifact\": \"avro\", \"version\": \"1.11.3\" }",
-                "{ \"group\": \"org.junit.jupiter\", \"artifact\": \"junit-jupiter-api\", \"version\": \"5.10.2\" }",
+                "{ \"group\": \"junit\", \"artifact\": \"junit\", \"version\": \"4.13.2\" }",
                 "{ \"group\": \"org.slf4j\", \"artifact\": \"slf4j-api\", \"version\": \"2.0.12\" }",
                 "{ \"group\": \"org.apache.logging.log4j\", \"artifact\": \"log4j-slf4j2-impl\", \"version\": \"2.22.1\" }",
                 "{ \"group\": \"com.google.code.findbugs\", \"artifact\": \"jsr305\", \"version\": \"3.0.2\" }",
