@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import org.blab.blender.registry.domain.SchemaRecord;
 
-public class ImMemoryRecordRepository implements SchemaRecordRepository {
+public class InMemoryRecordRepository implements SchemaRecordRepository {
   private Map<String, SchemaRecord> data;
 
-  public ImMemoryRecordRepository() {
+  public InMemoryRecordRepository() {
     data = new LinkedHashMap<>();
   }
 
