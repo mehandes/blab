@@ -1,12 +1,10 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.repository;
 
 import java.util.List;
 import java.util.Optional;
-import org.blab.blender.registry.domain.PatternIntersectionException;
 import org.blab.blender.registry.domain.SchemaRecord;
-import org.blab.blender.registry.repository.RepositoryException;
 
-public interface Registry {
+public interface SchemaRecordRepository {
   /**
    * Persist new record in registry.
    * 
@@ -19,7 +17,6 @@ public interface Registry {
    *         {@code false} if a record with the same identifier already exists.
    *         </p>
    * @throws NullPointerException if provided record is {@code null}.
-   * @throws ValidationException if the record provided is invalid.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
   boolean create(SchemaRecord record);
@@ -36,7 +33,6 @@ public interface Registry {
    *         {@code false} if a record with that identifier does not exists.
    *         </p>
    * @throws NullPointerException if provided record is {@code null}.
-   * @throws ValidationException if the record provided is invalid.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
   boolean update(SchemaRecord record);
@@ -80,10 +76,9 @@ public interface Registry {
    * @param id - identifier of the record to be retrieved
    * @return A list of records whose pattern metches a given topic.
    * @throws NullPointerException if provided topic is {@code null}.
-   * @throws PatternIntersectionException if the provided topic matches many schemas.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
-  Optional<SchemaRecord> getByTopic(String topic);
+  List<SchemaRecord> getByTopic(String topic);
 
   /**
    * Retrieve all records from registry.
