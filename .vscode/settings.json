@@ -12,18 +12,11 @@
         "lib/**/*.jar",
         "bazel-bin/external/**/*.jar"
     ],
-    "java.format.settings.url": ".vscode/java-google-style.xml",
-    "java.format.settings.profile": "GoogleStyle",
     "[java]": {
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "redhat.java",
         "editor.tabSize": 2,
+        "editor.inlayHints.enabled": "off",
+        "editor.defaultFormatter": "mngrm3a.vscode-google-java-formatter",
     },
-    "[c]": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "ms-vscode.cpptools",
-        "editor.tabSize": 2
-    },
-    "C_Cpp.clang_format_fallbackStyle": "Google",
-    "C_Cpp.clang_format_style": "file"
+    "gjf.jarPath": "/home/mehandes/blab/tools/google-java-format-1.19.2-all-deps.jar"
 }

@@ -29,8 +29,7 @@ public class SchemaRecord {
   }
 
   public void setSchema(String schema) {
-    if (schema == null)
-      throw new NullPointerException("Schema cannot contain null values.");
+    if (schema == null) throw new NullPointerException("Schema cannot contain null values.");
 
     this.schema = schema;
   }
@@ -40,8 +39,7 @@ public class SchemaRecord {
   }
 
   public void setPattern(String pattern) {
-    if (pattern == null)
-      throw new NullPointerException("Schema cannot contain null values.");
+    if (pattern == null) throw new NullPointerException("Schema cannot contain null values.");
 
     this.pattern = pattern;
   }

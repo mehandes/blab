@@ -37,3 +37,14 @@ java_test(
         "@maven//:org_apache_avro_avro"
     ],
 )
+
+java_test(
+    name = "RegistryTest",
+    srcs = glob(["src/test/java/**/RegistryTest.java"]),
+    test_class = "org.blab.blender.registry.RegistryTest",
+    deps = [
+        ":core",
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:org_apache_avro_avro"
+    ],
+)

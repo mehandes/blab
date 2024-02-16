@@ -4,7 +4,7 @@ package org.blab.blender.registry.domain;
 public interface SchemaValidator {
   /**
    * Validate given schema. If the schema is valid, returns nothing, otherwise throws exception.
-   * 
+   *
    * @param schema - schema to validate
    * @return {@code true} if the schema is valid.
    * @throws NullPointerException if the schema is {@code null}.

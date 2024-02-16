@@ -1,7 +1,7 @@
 package org.blab.blender.registry;
 
 import org.blab.blender.registry.domain.SchemaRecord;
-import org.blab.blender.registry.repository.InMemoryRecordRepository;
+import org.blab.blender.registry.repository.InMemorySchemaRecordRepository;
 import org.blab.blender.registry.repository.SchemaRecordRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ public class SchemaRecordRepositoryTest {
 
   @Before
   public void BeforeEach() {
-    repository = new InMemoryRecordRepository();
+    repository = new InMemorySchemaRecordRepository();
   }
 
   @Test

@@ -8,48 +8,39 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import org.blab.blender.registry.domain.SchemaRecord;
 
-public class InMemoryRecordRepository implements SchemaRecordRepository {
+public class InMemorySchemaRecordRepository implements SchemaRecordRepository {
   private Map<String, SchemaRecord> data;
 
-  public InMemoryRecordRepository() {
+  public InMemorySchemaRecordRepository() {
     data = new LinkedHashMap<>();
   }
 
   @Override
   public boolean create(SchemaRecord record) {
-    if (record == null)
-      throw new NullPointerException();
+    if (record == null) throw new NullPointerException();
 
-    if (data.containsKey(record.getId()))
-      return false;
-    else
-      data.put(record.getId(), record);
+    if (data.containsKey(record.getId())) return false;
+    else data.put(record.getId(), record);
 
     return true;
   }
 
   @Override
   public boolean update(SchemaRecord record) {
-    if (record == null)
-      throw new NullPointerException();
+    if (record == null) throw new NullPointerException();
 
-    if (!data.containsKey(record.getId()))
-      return false;
-    else
-      data.put(record.getId(), record);
+    if (!data.containsKey(record.getId())) return false;
+    else data.put(record.getId(), record);
 
     return true;
   }
 
   @Override
   public boolean remove(String id) {
-    if (id == null)
-      throw new NullPointerException();
+    if (id == null) throw new NullPointerException();
 
-    if (!data.containsKey(id))
-      return false;
-    else
-      data.remove(id);
+    if (!data.containsKey(id)) return false;
+    else data.remove(id);
 
     return true;
   }
@@ -61,25 +52,24 @@ public class InMemoryRecordRepository implements SchemaRecordRepository {
 
   @Override
   public Optional<SchemaRecord> getById(String id) {
-    if (id == null)
-      throw new NullPointerException();
+    if (id == null) throw new NullPointerException();
 
     return Optional.ofNullable(data.get(id));
   }
 
   @Override
   public List<SchemaRecord> getByTopic(String topic) {
-    if (topic == null)
-      throw new NullPointerException();
+    if (topic == null) throw new NullPointerException();
 
     List<SchemaRecord> result = new ArrayList<>();
 
-    data.entrySet().forEach(entry -> {
-      Pattern pattern = Pattern.compile(entry.getValue().getPattern());
+    data.entrySet()
+        .forEach(
+            entry -> {
+              Pattern pattern = Pattern.compile(entry.getValue().getPattern());
 
-      if (pattern.matcher(topic).matches())
-        result.add(entry.getValue());
-    });
+              if (pattern.matcher(topic).matches()) result.add(entry.getValue());
+            });
 
     return result;
   }
@@ -88,5 +78,4 @@ public class InMemoryRecordRepository implements SchemaRecordRepository {
   public List<SchemaRecord> getAll() {
     return data.entrySet().stream().map(entry -> entry.getValue()).toList();
   }
-
 }

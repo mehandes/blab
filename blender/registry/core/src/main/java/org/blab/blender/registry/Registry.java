@@ -4,20 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import org.blab.blender.registry.domain.PatternIntersectionException;
 import org.blab.blender.registry.domain.SchemaRecord;
+import org.blab.blender.registry.domain.ValidationException;
 import org.blab.blender.registry.repository.RepositoryException;
 
 public interface Registry {
   /**
    * Persist new record in registry.
-   * 
+   *
    * @param record - record to persist
    * @return
-   *         <p>
-   *         {@code true} if the record saved.
-   *         </p>
-   *         <p>
-   *         {@code false} if a record with the same identifier already exists.
-   *         </p>
+   *     <p>{@code true} if the record saved.
+   *     <p>{@code false} if a record with the same identifier already exists.
    * @throws NullPointerException if provided record is {@code null}.
    * @throws ValidationException if the record provided is invalid.
    * @throws RepositoryException if there are unrecoverable errors occurs.
@@ -26,15 +23,11 @@ public interface Registry {
 
   /**
    * Update record in registry.
-   * 
+   *
    * @param record - record to update
    * @return
-   *         <p>
-   *         {@code true} if the record updated.
-   *         </p>
-   *         <p>
-   *         {@code false} if a record with that identifier does not exists.
-   *         </p>
+   *     <p>{@code true} if the record updated.
+   *     <p>{@code false} if a record with that identifier does not exists.
    * @throws NullPointerException if provided record is {@code null}.
    * @throws ValidationException if the record provided is invalid.
    * @throws RepositoryException if there are unrecoverable errors occurs.
@@ -43,15 +36,11 @@ public interface Registry {
 
   /**
    * Remove record by given id.
-   * 
+   *
    * @param id - identifier of the record to be removed
    * @return
-   *         <p>
-   *         {@code true} if the record removed.
-   *         </p>
-   *         <p>
-   *         {@code false} if a record with that identifier does not exists.
-   *         </p>
+   *     <p>{@code true} if the record removed.
+   *     <p>{@code false} if a record with that identifier does not exists.
    * @throws NullPointerException if provided id is {@code null}.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
@@ -66,7 +55,7 @@ public interface Registry {
 
   /**
    * Retrieve record by given id.
-   * 
+   *
    * @param id - identifier of the record to be retrieved
    * @return Optional with a required record, if one exists.
    * @throws NullPointerException if provided id is {@code null}.
@@ -76,18 +65,18 @@ public interface Registry {
 
   /**
    * Retrieve record by given topic.
-   * 
+   *
    * @param id - identifier of the record to be retrieved
    * @return A list of records whose pattern metches a given topic.
    * @throws NullPointerException if provided topic is {@code null}.
    * @throws PatternIntersectionException if the provided topic matches many schemas.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
-  Optional<SchemaRecord> getByTopic(String topic);
+  Optional<SchemaRecord> getByTopic(String topic) throws PatternIntersectionException;
 
   /**
    * Retrieve all records from registry.
-   * 
+   *
    * @return A list of all records stored in registry.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */

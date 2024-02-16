@@ -2,7 +2,7 @@ package org.blab.blender.registry.domain;
 
 import java.util.Map;
 
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
   private Map<String, String> violations;
 
   public ValidationException(String message) {

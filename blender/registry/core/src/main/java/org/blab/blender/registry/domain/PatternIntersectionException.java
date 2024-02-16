@@ -3,19 +3,19 @@ package org.blab.blender.registry.domain;
 import java.util.List;
 
 public class PatternIntersectionException extends Exception {
-  private List<String> patterns;
+  private List<SchemaRecord> records;
 
-  public PatternIntersectionException(List<String> patterns) {
+  public PatternIntersectionException(List<SchemaRecord> records) {
     super();
-    this.patterns = patterns;
+    this.records = records;
   }
 
-  public PatternIntersectionException(List<String> patterns, String message) {
+  public PatternIntersectionException(List<SchemaRecord> records, String message) {
     super(message);
-    this.patterns = patterns;
+    this.records = records;
   }
 
-  public List<String> getPatterns() {
-    return patterns;
+  public List<SchemaRecord> getRecords() {
+    return records;
   }
 }
