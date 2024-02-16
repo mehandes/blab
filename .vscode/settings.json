@@ -5,7 +5,6 @@
         "commons/java/src/test/java",
         "commons/java/src/main/java",
         "blender/river/core/src/main/java",
-        "blender/registry/web/src/main/java",
         "blender/registry/core/src/main/java",
         "blender/registry/core/src/test/java"
     ],

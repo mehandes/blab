@@ -1,6 +1,9 @@
 java_library(
     name = "core",
     srcs = glob(["src/main/java/**/*.java"]),
+    deps = [
+        "@maven//:org_apache_avro_avro"
+    ]
 )
 
 java_test(
@@ -10,5 +13,16 @@ java_test(
     deps = [
         ":core",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
+    ],
+)
+
+java_test(
+    name = "AvroSchemaValidatorTest",
+    srcs = glob(["src/test/java/**/AvroSchemaValidatorTest.java"]),
+    test_class = "org.blab.blender.registry.AvroSchemaValidatorTest",
+    deps = [
+        ":core",
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:org_apache_avro_avro"
     ],
 )
