@@ -2,8 +2,8 @@ package org.blab.commons;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 class Consumer extends Thread {
   private final Buffer<Integer> buffer;
@@ -65,7 +65,7 @@ public class BufferTest {
     consumer.join(1000);
     producer.join(1000);
 
-    Assert.assertEquals(consumer.getConsumed().size(), producer.getProduced().size());
+    Assertions.assertEquals(consumer.getConsumed().size(), producer.getProduced().size());
   }
 
   @Test
@@ -80,7 +80,7 @@ public class BufferTest {
     producer.join(1000);
     consumer.join(1000);
 
-    Assert.assertTrue(consumer.isAlive());
+    Assertions.assertTrue(consumer.isAlive());
   }
 
   @Test
@@ -98,8 +98,8 @@ public class BufferTest {
     consumer1.join();
     consumer2.join();
 
-    Assert.assertTrue(consumer1.getConsumed().containsAll(List.of(1, 2, 3, 4, 5)));
-    Assert.assertTrue(consumer2.getConsumed().containsAll(List.of(6, 7, 8, 9, 10)));
+    Assertions.assertTrue(consumer1.getConsumed().containsAll(List.of(1, 2, 3, 4, 5)));
+    Assertions.assertTrue(consumer2.getConsumed().containsAll(List.of(6, 7, 8, 9, 10)));
   }
 
   @Test
@@ -117,8 +117,8 @@ public class BufferTest {
     consumer1.join(1000);
     consumer2.join(1000);
 
-    Assert.assertTrue(consumer1.getConsumed().containsAll(List.of(1, 2, 3, 4, 5)));
-    Assert.assertTrue(consumer2.isAlive());
+    Assertions.assertTrue(consumer1.getConsumed().containsAll(List.of(1, 2, 3, 4, 5)));
+    Assertions.assertTrue(consumer2.isAlive());
   }
 
   @Test
@@ -136,7 +136,7 @@ public class BufferTest {
     producer2.join(1000);
     consumer.join(1000);
 
-    Assert.assertTrue(consumer.getConsumed().containsAll(List.of(1, 2, 3, 4, 5, 6)));
+    Assertions.assertTrue(consumer.getConsumed().containsAll(List.of(1, 2, 3, 4, 5, 6)));
   }
 
   @Test
@@ -154,9 +154,9 @@ public class BufferTest {
     producer2.join(1000);
     consumer.join(1000);
 
-    Assert.assertEquals(producer1.getProduced().size(), 3);
-    Assert.assertEquals(producer2.getProduced().size(), 3);
-    Assert.assertTrue(consumer.isAlive());
+    Assertions.assertEquals(producer1.getProduced().size(), 3);
+    Assertions.assertEquals(producer2.getProduced().size(), 3);
+    Assertions.assertTrue(consumer.isAlive());
   }
 
   @Test
@@ -177,10 +177,10 @@ public class BufferTest {
     consumer1.join(1000);
     consumer2.join(1000);
 
-    Assert.assertEquals(producer1.getProduced().size(), 3);
-    Assert.assertEquals(producer2.getProduced().size(), 3);
-    Assert.assertEquals(consumer1.getConsumed().size(), 3);
-    Assert.assertEquals(consumer2.getConsumed().size(), 3);
+    Assertions.assertEquals(producer1.getProduced().size(), 3);
+    Assertions.assertEquals(producer2.getProduced().size(), 3);
+    Assertions.assertEquals(consumer1.getConsumed().size(), 3);
+    Assertions.assertEquals(consumer2.getConsumed().size(), 3);
   }
 
   @Test
@@ -201,9 +201,9 @@ public class BufferTest {
     consumer1.join(1000);
     consumer2.join(1000);
 
-    Assert.assertEquals(producer1.getProduced().size(), 3);
-    Assert.assertEquals(producer2.getProduced().size(), 3);
-    Assert.assertEquals(consumer1.getConsumed().size(), 3);
-    Assert.assertTrue(consumer2.isAlive());
+    Assertions.assertEquals(producer1.getProduced().size(), 3);
+    Assertions.assertEquals(producer2.getProduced().size(), 3);
+    Assertions.assertEquals(consumer1.getConsumed().size(), 3);
+    Assertions.assertTrue(consumer2.isAlive());
   }
 }

@@ -9,6 +9,6 @@ java_test(
     test_class = "org.blab.commons.BufferTest",
     deps = [
         ":buffer",
-        "@maven//:junit_junit"
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )

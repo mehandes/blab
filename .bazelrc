@@ -1,1 +1,1 @@
-build --java_language_version=17
+common --java_language_version=17
