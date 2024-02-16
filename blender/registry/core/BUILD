@@ -26,3 +26,14 @@ java_test(
         "@maven//:org_apache_avro_avro"
     ],
 )
+
+java_test(
+    name = "SchemaRecordRepositoryTest",
+    srcs = glob(["src/test/java/**/SchemaRecordRepositoryTest.java"]),
+    test_class = "org.blab.blender.registry.SchemaRecordRepositoryTest",
+    deps = [
+        ":core",
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:org_apache_avro_avro"
+    ],
+)
