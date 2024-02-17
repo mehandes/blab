@@ -1,4 +1,4 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public interface Registry {
    * @throws ValidationException if the record provided is invalid.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
-  boolean create(SchemaRecord record);
+  boolean save(SchemaRecord record);
 
   /**
    * Update record in registry.

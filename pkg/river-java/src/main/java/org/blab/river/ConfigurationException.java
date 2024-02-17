@@ -1,4 +1,4 @@
-package org.blab.blender.river;
+package org.blab.river;
 
 public class ConfigurationException extends RiverException {
   private String name;

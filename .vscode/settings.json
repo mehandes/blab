@@ -12,10 +12,12 @@
     "gjf.jarPath": "/home/mehandes/blab/tools/google-java-format-1.19.2-all-deps.jar",
     "java.project.sourcePaths": [
         "prj/blender/pkg/registry/src/test/java",
+        "prj/blender/pkg/registry/src/main/java",
         "pkg/utils-java/src/test/java",
         "pkg/utils-java/src/main/java",
         "pkg/types-java/src/test/java",
         "pkg/types-java/src/main/java",
-        "prj/blender/pkg/registry/src/main/java"
-    ]
+        "pkg/river-java/src/main/java"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }

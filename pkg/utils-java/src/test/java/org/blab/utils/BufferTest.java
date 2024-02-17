@@ -1,4 +1,4 @@
-package org.blab.commons;
+package org.blab.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,6 @@ class Consumer extends Thread {
   }
 }
 
-
 class Producer extends Thread {
   private final Buffer<Integer> buffer;
   private final List<Integer> toProduce;
@@ -50,7 +49,6 @@ class Producer extends Thread {
     }
   }
 }
-
 
 public class BufferTest {
   @Test

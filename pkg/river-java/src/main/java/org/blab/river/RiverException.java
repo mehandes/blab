@@ -1,4 +1,4 @@
-package org.blab.blender.river;
+package org.blab.river;
 
 /** Base class for all unrecoverable River exceptions. */
 public class RiverException extends RuntimeException {

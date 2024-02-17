@@ -15,7 +15,7 @@ public interface SchemaRecordRepository {
    * @throws NullPointerException if provided record is {@code null}.
    * @throws RepositoryException if there are unrecoverable errors occurs.
    */
-  boolean create(SchemaRecord record);
+  boolean save(SchemaRecord record);
 
   /**
    * Update record in registry.

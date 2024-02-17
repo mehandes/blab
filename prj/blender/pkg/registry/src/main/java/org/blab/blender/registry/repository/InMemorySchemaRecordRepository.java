@@ -16,7 +16,7 @@ public class InMemorySchemaRecordRepository implements SchemaRecordRepository {
   }
 
   @Override
-  public boolean create(SchemaRecord record) {
+  public boolean save(SchemaRecord record) {
     if (record == null) throw new NullPointerException();
 
     if (data.containsKey(record.getId())) return false;

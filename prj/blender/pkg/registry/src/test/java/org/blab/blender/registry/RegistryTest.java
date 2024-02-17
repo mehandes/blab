@@ -7,6 +7,8 @@ import org.blab.blender.registry.domain.PosixBasicPatternValidator;
 import org.blab.blender.registry.domain.SchemaRecord;
 import org.blab.blender.registry.domain.ValidationException;
 import org.blab.blender.registry.repository.InMemorySchemaRecordRepository;
+import org.blab.blender.registry.service.DefaultRegistry;
+import org.blab.blender.registry.service.Registry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -26,28 +28,26 @@ public class RegistryTest {
   }
 
   @Test
-  public void createNullRecordTest() {
-    Assertions.assertThrows(NullPointerException.class, () -> registry.create(null));
+  public void saveNullRecordTest() {
+    Assertions.assertThrows(NullPointerException.class, () -> registry.save(null));
   }
 
   @Test
-  public void createRecordWithInvalidSchemaTest() {
+  public void saveRecordWithInvalidSchemaTest() {
     Assertions.assertThrows(
-        ValidationException.class,
-        () -> registry.create(new SchemaRecord("name", "[]", "pattern")));
+        ValidationException.class, () -> registry.save(new SchemaRecord("name", "[]", "pattern")));
   }
 
   @Test
-  public void createRecordWithInvalidPatternTest() {
+  public void saveRecordWithInvalidPatternTest() {
     Assertions.assertThrows(
-        ValidationException.class,
-        () -> registry.create(new SchemaRecord("name", VALID_SCHEMA, "")));
+        ValidationException.class, () -> registry.save(new SchemaRecord("name", VALID_SCHEMA, "")));
   }
 
   @Test
-  public void createRecordThatAlreadyExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
-    Assertions.assertFalse(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+  public void saveRecordThatAlreadyExistsTest() {
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertFalse(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
     Assertions.assertEquals(registry.getAll().size(), 1);
   }
 
@@ -58,7 +58,7 @@ public class RegistryTest {
 
   @Test
   public void updateRecordThatExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
     Assertions.assertTrue(registry.update(new SchemaRecord("name", VALID_SCHEMA, "pattern-new")));
     Assertions.assertEquals(registry.getAll().size(), 1);
   }
@@ -70,7 +70,7 @@ public class RegistryTest {
 
   @Test
   public void updateRecordWithInvalidSchemaTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
 
     Assertions.assertThrows(
         ValidationException.class,
@@ -79,7 +79,7 @@ public class RegistryTest {
 
   @Test
   public void updateRecordWithInvalidPatternTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
 
     Assertions.assertThrows(
         ValidationException.class,
@@ -93,7 +93,7 @@ public class RegistryTest {
 
   @Test
   public void removeRecordThatExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
     Assertions.assertTrue(registry.remove("name"));
     Assertions.assertTrue(registry.getAll().isEmpty());
   }
@@ -105,9 +105,9 @@ public class RegistryTest {
 
   @Test
   public void clearTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name1", VALID_SCHEMA, "pattern1")));
-    Assertions.assertTrue(registry.create(new SchemaRecord("name2", VALID_SCHEMA, "pattern2")));
-    Assertions.assertTrue(registry.create(new SchemaRecord("name3", VALID_SCHEMA, "pattern3")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name1", VALID_SCHEMA, "pattern1")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name2", VALID_SCHEMA, "pattern2")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name3", VALID_SCHEMA, "pattern3")));
     registry.clear();
 
     Assertions.assertTrue(registry.getAll().isEmpty());
@@ -120,7 +120,7 @@ public class RegistryTest {
 
   @Test
   public void getByIdRecordExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
     Assertions.assertTrue(registry.getById("name").isPresent());
   }
 
@@ -136,15 +136,15 @@ public class RegistryTest {
 
   @Test
   public void getByTopicSingleExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name", VALID_SCHEMA, "pattern")));
     Assertions.assertDoesNotThrow(
         () -> Assertions.assertTrue(registry.getByTopic("pattern").isPresent()));
   }
 
   @Test
   public void getByTopicMultipleExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name1", VALID_SCHEMA, "pattern")));
-    Assertions.assertTrue(registry.create(new SchemaRecord("name2", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name1", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name2", VALID_SCHEMA, "pattern")));
     Assertions.assertThrows(
         PatternIntersectionException.class, () -> registry.getByTopic("pattern"));
   }
@@ -162,9 +162,9 @@ public class RegistryTest {
 
   @Test
   public void getAllNonZeroExistsTest() {
-    Assertions.assertTrue(registry.create(new SchemaRecord("name1", VALID_SCHEMA, "pattern")));
-    Assertions.assertTrue(registry.create(new SchemaRecord("name2", VALID_SCHEMA, "pattern")));
-    Assertions.assertTrue(registry.create(new SchemaRecord("name3", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name1", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name2", VALID_SCHEMA, "pattern")));
+    Assertions.assertTrue(registry.save(new SchemaRecord("name3", VALID_SCHEMA, "pattern")));
     Assertions.assertEquals(registry.getAll().size(), 3);
   }
 }

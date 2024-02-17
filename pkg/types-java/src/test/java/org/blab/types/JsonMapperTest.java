@@ -4,82 +4,50 @@ import org.junit.Test;
 
 public class JsonMapperTest {
   @Test
-  public void createWithProperties() {
-
-  }
+  public void createWithProperties() {}
 
   @Test
-  public void createWithoutProperties() {
-
-  }
+  public void createWithoutProperties() {}
 
   @Test
-  public void createWithoutRequiredProperties() {
-
-  }
+  public void createWithoutRequiredProperties() {}
 
   @Test
-  public void createWithEmptyRequiredProperties() {
-
-  }
+  public void createWithEmptyRequiredProperties() {}
 
   @Test
-  public void mapToBytes() {
-
-  }
+  public void mapToBytes() {}
 
   @Test
-  public void mapToBytesNullObject() {
-
-  }
+  public void mapToBytesNullObject() {}
 
   @Test
-  public void mapFromBytes() {
-
-  }
+  public void mapFromBytes() {}
 
   @Test
-  public void mapFromBytesNullBytesArray() {
-
-  }
+  public void mapFromBytesNullBytesArray() {}
 
   @Test
-  public void mapFromBytesEmptyBytesArray() {
-
-  }
+  public void mapFromBytesEmptyBytesArray() {}
 
   @Test
-  public void mapToAvro() {
-
-  }
+  public void mapToAvro() {}
 
   @Test
-  public void mapToAvroNullSchema() {
-
-  }
+  public void mapToAvroNullSchema() {}
 
   @Test
-  public void mapToAvroNullObject() {
-
-  }
+  public void mapToAvroNullObject() {}
 
   @Test
-  public void mapToAvroUnsupportedSchema() {
-
-  }
+  public void mapToAvroUnsupportedSchema() {}
 
   @Test
-  public void mapToAvroObjectDoesNotSufisfySchema() {
-
-  }
+  public void mapToAvroObjectDoesNotSufisfySchema() {}
 
   @Test
-  public void mapFromAvro() {
-
-  }
+  public void mapFromAvro() {}
 
   @Test
-  public void mapFromAvroUnsupportedSchema() {
-
-  }
+  public void mapFromAvroUnsupportedSchema() {}
 }

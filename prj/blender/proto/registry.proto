@@ -1,0 +1,18 @@
+syntax="proto3";
+
+package org.blab.blender.registry;
+
+import "google/protobuf/wrappers.proto";
+
+service Registry {
+    rpc Save(SchemaRecord) returns (google.protobuf.BoolValue);
+    rpc Update(SchemaRecord) returns (google.protobuf.BoolValue);
+    rpc Remove(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+    rpc Clear();
+}
+
+message SchemaRecord {
+    string id = 1;
+    string schema = 2;
+    string pattern = 3;
+}

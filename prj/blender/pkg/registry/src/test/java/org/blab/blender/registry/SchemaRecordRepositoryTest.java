@@ -11,20 +11,20 @@ public class SchemaRecordRepositoryTest {
   private SchemaRecordRepository repository;
 
   @Before
-  public void BeforeEach() {
+  public void before() {
     repository = new InMemorySchemaRecordRepository();
   }
 
   @Test
-  public void createNullRecordTest() {
-    Assertions.assertThrows(NullPointerException.class, () -> repository.create(null));
+  public void saveNullRecordTest() {
+    Assertions.assertThrows(NullPointerException.class, () -> repository.save(null));
   }
 
   @Test
-  public void createTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name1", "schema1", "pattern1")));
-    Assertions.assertFalse(repository.create(new SchemaRecord("name1", "schema2", "pattern2")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name2", "schema1", "pattern1")));
+  public void saveTest() {
+    Assertions.assertTrue(repository.save(new SchemaRecord("name1", "schema1", "pattern1")));
+    Assertions.assertFalse(repository.save(new SchemaRecord("name1", "schema2", "pattern2")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name2", "schema1", "pattern1")));
     Assertions.assertEquals(repository.getAll().size(), 2);
   }
 
@@ -35,7 +35,7 @@ public class SchemaRecordRepositoryTest {
 
   @Test
   public void updateRecordExistsTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name", "schema", "pattern")));
     Assertions.assertTrue(repository.update(new SchemaRecord("name", "schema", "pattern-new")));
     Assertions.assertEquals(repository.getAll().size(), 1);
   }
@@ -52,7 +52,7 @@ public class SchemaRecordRepositoryTest {
 
   @Test
   public void removeRecordExistsTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name", "schema", "pattern")));
     Assertions.assertTrue(repository.remove("name"));
     Assertions.assertTrue(repository.getAll().isEmpty());
   }
@@ -64,9 +64,9 @@ public class SchemaRecordRepositoryTest {
 
   @Test
   public void clearTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name1", "schema1", "pattern1")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name2", "schema2", "pattern2")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name3", "schema3", "pattern3")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name1", "schema1", "pattern1")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name2", "schema2", "pattern2")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name3", "schema3", "pattern3")));
     repository.clear();
 
     Assertions.assertTrue(repository.getAll().isEmpty());
@@ -79,7 +79,7 @@ public class SchemaRecordRepositoryTest {
 
   @Test
   public void getByIdRecordExistsTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name", "schema", "pattern")));
     Assertions.assertTrue(repository.getById("name").isPresent());
   }
 
@@ -95,15 +95,15 @@ public class SchemaRecordRepositoryTest {
 
   @Test
   public void getByTopicSingleExistsTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name", "schema", "pattern")));
     Assertions.assertEquals(repository.getByTopic("pattern").size(), 1);
   }
 
   @Test
   public void getByTopicMultipleExistsTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name1", "schema", "pattern")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name2", "schema", "pattern")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name3", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name1", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name2", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name3", "schema", "pattern")));
     Assertions.assertEquals(repository.getByTopic("pattern").size(), 3);
   }
 
@@ -119,9 +119,9 @@ public class SchemaRecordRepositoryTest {
 
   @Test
   public void getAllNonZeroExistsTest() {
-    Assertions.assertTrue(repository.create(new SchemaRecord("name1", "schema", "pattern")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name2", "schema", "pattern")));
-    Assertions.assertTrue(repository.create(new SchemaRecord("name3", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name1", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name2", "schema", "pattern")));
+    Assertions.assertTrue(repository.save(new SchemaRecord("name3", "schema", "pattern")));
     Assertions.assertEquals(repository.getAll().size(), 3);
   }
 }

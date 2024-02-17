@@ -1,11 +1,11 @@
-package org.blab.blender.river;
+package org.blab.river;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
 /** Interface for consuming messages from River. */
-public interface Consumer {
+public interface RiverConsumer {
   public static final String PROPERTIES_BASE = "river.consumer";
 
   /**

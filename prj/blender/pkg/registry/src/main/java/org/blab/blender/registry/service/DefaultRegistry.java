@@ -1,4 +1,4 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +24,13 @@ public class DefaultRegistry implements Registry {
   }
 
   @Override
-  public boolean create(SchemaRecord record) throws ValidationException {
+  public boolean save(SchemaRecord record) throws ValidationException {
     if (record == null) throw new NullPointerException();
 
     schemaValidator.validate(record.getSchema());
     patternValidator.validate(record.getPattern());
 
-    return repository.create(record);
+    return repository.save(record);
   }
 
   @Override

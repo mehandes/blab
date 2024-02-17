@@ -1,4 +1,4 @@
-package org.blab.commons;
+package org.blab.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A {@link BlockingQueue} that override {@link #drainTo(Collection, int)} operation meaning.
- * 
+ *
  * @param <T> the type of elements held in this buffer
  */
 public class Buffer<T> implements BlockingQueue<T> {
@@ -77,7 +77,6 @@ public class Buffer<T> implements BlockingQueue<T> {
       lock.unlock();
     }
   }
-
 
   @Override
   public Iterator<T> iterator() {
@@ -146,8 +145,7 @@ public class Buffer<T> implements BlockingQueue<T> {
     try {
       boolean r = true;
 
-      if (data.size() == 0)
-        r = notEmpty.await(timeout, unit);
+      if (data.size() == 0) r = notEmpty.await(timeout, unit);
 
       return r ? data.poll() : null;
     } finally {
@@ -160,8 +158,7 @@ public class Buffer<T> implements BlockingQueue<T> {
     lock.lock();
 
     try {
-      if (data.size() == 0)
-        notEmpty.await();
+      if (data.size() == 0) notEmpty.await();
 
       return data.poll();
     } finally {
@@ -189,8 +186,7 @@ public class Buffer<T> implements BlockingQueue<T> {
     lock.lock();
 
     try {
-      while (data.size() < maxElements)
-        notEmpty.await();
+      while (data.size() < maxElements) notEmpty.await();
 
       return drain(c, maxElements);
     } catch (InterruptedException e) {
@@ -203,11 +199,9 @@ public class Buffer<T> implements BlockingQueue<T> {
   private int drain(Collection<? super T> c, int maxElements) {
     List<T> l = new ArrayList<>(maxElements);
 
-    for (int i = 0; i < maxElements; ++i)
-      l.add(data.poll());
+    for (int i = 0; i < maxElements; ++i) l.add(data.poll());
 
-    for (int i = maxElements - 1; i >= 0; --i)
-      c.add(l.get(i));
+    for (int i = maxElements - 1; i >= 0; --i) c.add(l.get(i));
 
     return maxElements;
   }
@@ -300,8 +294,7 @@ public class Buffer<T> implements BlockingQueue<T> {
     try {
       boolean r = data.offer(e);
 
-      if (r)
-        notEmpty.signalAll();
+      if (r) notEmpty.signalAll();
 
       return r;
     } finally {
