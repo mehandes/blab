@@ -1,13 +1,4 @@
 {
-    "java.project.sourcePaths": [
-        "types/java/src/test/java",
-        "types/java/src/main/java",
-        "commons/java/src/test/java",
-        "commons/java/src/main/java",
-        "blender/river/core/src/main/java",
-        "blender/registry/core/src/main/java",
-        "blender/registry/core/src/test/java"
-    ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "bazel-bin/external/**/*.jar"
@@ -18,5 +9,13 @@
         "editor.inlayHints.enabled": "off",
         "editor.defaultFormatter": "mngrm3a.vscode-google-java-formatter",
     },
-    "gjf.jarPath": "/home/mehandes/blab/tools/google-java-format-1.19.2-all-deps.jar"
+    "gjf.jarPath": "/home/mehandes/blab/tools/google-java-format-1.19.2-all-deps.jar",
+    "java.project.sourcePaths": [
+        "prj/blender/pkg/registry/src/test/java",
+        "pkg/utils-java/src/test/java",
+        "pkg/utils-java/src/main/java",
+        "pkg/types-java/src/test/java",
+        "pkg/types-java/src/main/java",
+        "prj/blender/pkg/registry/src/main/java"
+    ]
 }

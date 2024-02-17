@@ -11,35 +11,29 @@ public interface Consumer {
   /**
    * Fetch data for the lades specified using {@link #subscribe(Set)} or {@link #subscribe(String)}
    * methods.
-   * 
-   * <p>
-   * This method returns immediately if there are records available. Otherwise, it will await the
+   *
+   * <p>This method returns immediately if there are records available. Otherwise, it will await the
    * passed timeout. If the timeout expires, an empty record set will be returned.
-   * </p>
-   * 
+   *
    * @param timeout - maximum time to block (0 <= t <= Long.MAX_VALUE)
    * @return List of events since last fetch.
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
-   *         exceptions) occurs.
+   *     exceptions) occurs.
    * @throws IllegalStateException if the consumer was closed before calling this method or if the
-   *         consumer is not subscribed to any lade.
+   *     consumer is not subscribed to any lade.
    */
   List<Event> poll(Duration timeout);
 
   /**
    * Subscribe to all lades from the presented set.
-   * 
-   * <p>
-   * Skips lades that are already being monitored.
-   * </p>
-   * 
-   * <p>
-   * Throws an exception if invalid lades or pattern provided.
-   * </p>
-   * 
+   *
+   * <p>Skips lades that are already being monitored.
+   *
+   * <p>Throws an exception if invalid lades or pattern provided.
+   *
    * @param lades - lades to subscribe
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
-   *         exceptions).
+   *     exceptions).
    * @throws IllegalStateException if the consumer was closed before calling this method.
    * @throws IllegalArgumentException if invalid lades or pattern provided.
    */
@@ -47,18 +41,14 @@ public interface Consumer {
 
   /**
    * Subscribe to all lades matching the specified pattern.
-   * 
-   * <p>
-   * Skips lades that are already being monitored.
-   * </p>
-   * 
-   * <p>
-   * Throws an exception if invalid pattern provided.
-   * </p>
-   * 
+   *
+   * <p>Skips lades that are already being monitored.
+   *
+   * <p>Throws an exception if invalid pattern provided.
+   *
    * @param pattern - pattern to subscribe
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
-   *         exceptions).
+   *     exceptions).
    * @throws IllegalStateException if the consumer was closed before calling this method.
    * @throws IllegalArgumentException if invalid pattern provided.
    */
@@ -66,9 +56,9 @@ public interface Consumer {
 
   /**
    * Unsubscribe from all lades.
-   * 
+   *
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
-   *         exceptions).
+   *     exceptions).
    * @throws IllegalStateException if the consumer was closed before calling this method.
    */
   void unsubscribe();

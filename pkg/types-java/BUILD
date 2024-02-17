@@ -1,9 +1,8 @@
 java_library(
-    name = "core",
-    srcs = glob(["src/main/java/**/*.java"]),
+    name = "types-java",
+    srcs = ["src/main/java/org/blab/types/TypeMapper.java"],
     deps = [
         "@maven//:org_apache_avro_avro",
-        "@maven//:org_slf4j_slf4j_api",
     ],
 )
 
@@ -12,7 +11,6 @@ java_test(
     srcs = ["src/test/java/org/blab/types/DelimitedMapperTest.java"],
     test_class = "org.blab.types.DelimitedMapperTest",
     deps = [
-        ":core",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )
@@ -22,7 +20,6 @@ java_test(
     srcs = ["src/test/java/org/blab/types/JsonMapperTest.java"],
     test_class = "org.blab.types.JsonMapperTest",
     deps = [
-        ":core",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )
@@ -32,7 +29,6 @@ java_test(
     srcs = ["src/test/java/org/blab/types/CsvMapperTest.java"],
     test_class = "org.blab.types.CsvMapperTest",
     deps = [
-        ":core",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )

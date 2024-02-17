@@ -1,5 +1,5 @@
 java_library(
-    name = "core",
+    name = "registry",
     srcs = glob(["src/main/java/**/*.java"]),
     deps = [
         "@maven//:org_apache_avro_avro"
@@ -11,7 +11,7 @@ java_test(
     srcs = glob(["src/test/java/**/PosixPatternValidatorTest.java"]),
     test_class = "org.blab.blender.registry.PosixPatternValidatorTest",
     deps = [
-        ":core",
+        ":registry",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )
@@ -21,7 +21,7 @@ java_test(
     srcs = glob(["src/test/java/**/AvroSchemaValidatorTest.java"]),
     test_class = "org.blab.blender.registry.AvroSchemaValidatorTest",
     deps = [
-        ":core",
+        ":registry",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_apache_avro_avro"
     ],
@@ -32,7 +32,7 @@ java_test(
     srcs = glob(["src/test/java/**/SchemaRecordRepositoryTest.java"]),
     test_class = "org.blab.blender.registry.SchemaRecordRepositoryTest",
     deps = [
-        ":core",
+        ":registry",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_apache_avro_avro"
     ],
@@ -43,7 +43,7 @@ java_test(
     srcs = glob(["src/test/java/**/RegistryTest.java"]),
     test_class = "org.blab.blender.registry.RegistryTest",
     deps = [
-        ":core",
+        ":registry",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_apache_avro_avro"
     ],
