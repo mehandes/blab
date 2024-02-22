@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "6cd8b4c4e3b8b775b249f3ae3cc414cee5006e50e876d1e40b964fb21d4c9c01",
+  "moduleFileHash": "a5e93c467a79ba8a0945a34a10300c54c95c121e025ea4dcfb38a61cc2903a39",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -1613,34 +1613,6 @@
           }
         },
         "recordedRepoMappingEntries": []
-      }
-    },
-    "@@protobuf~23.1//:non_module_deps.bzl%non_module_deps": {
-      "general": {
-        "bzlTransitiveDigest": "y/QVhgwEpduKjMEF4YflykcfvrWnGGE8W8O3bTxy5eI=",
-        "accumulatedFileDigests": {},
-        "envVariables": {},
-        "generatedRepoSpecs": {
-          "utf8_range": {
-            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
-            "ruleClassName": "http_archive",
-            "attributes": {
-              "urls": [
-                "https://github.com/protocolbuffers/utf8_range/archive/de0b4a8ff9b5d4c98108bdfe723291a33c52c54f.zip"
-              ],
-              "strip_prefix": "utf8_range-de0b4a8ff9b5d4c98108bdfe723291a33c52c54f",
-              "name": "protobuf~23.1~non_module_deps~utf8_range",
-              "sha256": "5da960e5e5d92394c809629a03af3c7709d2d3d0ca731dacb3a9fb4bf28f7702"
-            }
-          }
-        },
-        "recordedRepoMappingEntries": [
-          [
-            "protobuf~23.1",
-            "bazel_tools",
-            "bazel_tools"
-          ]
-        ]
       }
     },
     "@@rules_java~7.3.2//java:extensions.bzl%toolchains": {

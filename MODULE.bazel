@@ -9,7 +9,7 @@ module(
 bazel_dep(name = "rules_proto", version = "6.0.0-rc2")
 bazel_dep(name = "protobuf", version = "23.1")
 
-# Java dependecies
+# Java dependencies
 bazel_dep(name = "rules_jvm_external", version = "6.0")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
@@ -32,5 +32,4 @@ maven.install(
         "https://repo1.maven.org/maven2",
     ],
 )
-
 use_repo(maven, "maven")

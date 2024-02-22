@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -66,9 +67,8 @@ public class Buffer<T> implements BlockingQueue<T> {
     }
   }
 
-  @SuppressWarnings("hiding")
   @Override
-  public <T> T[] toArray(T[] a) {
+  public <B> B[] toArray(B[] a) {
     lock.lock();
 
     try {
@@ -145,7 +145,7 @@ public class Buffer<T> implements BlockingQueue<T> {
     try {
       boolean r = true;
 
-      if (data.size() == 0) r = notEmpty.await(timeout, unit);
+      if (data.isEmpty()) r = notEmpty.await(timeout, unit);
 
       return r ? data.poll() : null;
     } finally {
@@ -158,9 +158,9 @@ public class Buffer<T> implements BlockingQueue<T> {
     lock.lock();
 
     try {
-      if (data.size() == 0) notEmpty.await();
+      if (data.isEmpty()) notEmpty.await();
 
-      return data.poll();
+      return Objects.requireNonNull(data.poll());
     } finally {
       lock.unlock();
     }
@@ -303,12 +303,12 @@ public class Buffer<T> implements BlockingQueue<T> {
   }
 
   @Override
-  public boolean offer(T e, long timeout, TimeUnit unit) throws InterruptedException {
+  public boolean offer(T e, long timeout, TimeUnit unit) {
     return offer(e);
   }
 
   @Override
-  public void put(T e) throws InterruptedException {
+  public void put(T e) {
     offer(e);
   }
 }

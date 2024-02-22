@@ -1,4 +1,4 @@
-package org.blab.river;
+  package org.blab.river;
 
 /** Interface for publishing messages to River. */
 public interface RiverProducer {
