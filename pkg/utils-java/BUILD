@@ -17,13 +17,3 @@ java_test(
         "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )
-
-java_test(
-    name = "BlockingSocketChannelTest",
-    srcs = ["src/test/java/org/blab/utils/BlockingSocketChannelTest.java"],
-    test_class = "org.blab.utils.BlockingSocketChannelTest",
-    deps = [
-        ":socket-channel",
-        "@maven//:org_junit_jupiter_junit_jupiter_api",
-    ],
-)

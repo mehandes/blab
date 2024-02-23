@@ -33,33 +33,38 @@ public class BlockingSocketChannel {
    * Create BlockingSocketChannel with specified buffer size.
    *
    * <p>The buffer size should be larger than any message potentially received from this channel. If
-   * the received message exceeds the specified size, it will be trimmed starting from the end.
+   * the received message exceeds the specified size, only last {@code bs} bytes will be received.
    *
-   * @param bufferSize size of buffer.
+   * @param bs size of buffer.
    * @throws IllegalArgumentException if buffer size is zero or negative.
    */
-  public BlockingSocketChannel(int bufferSize) {
-    if (bufferSize <= 0) throw new IllegalArgumentException("Buffer size must be positive.");
-    buffer = new RingBuffer(bufferSize);
+  public BlockingSocketChannel(int bs) {
+    if (bs <= 0) throw new IllegalArgumentException("Buffer size must be positive.");
+    buffer = new RingBuffer(bs);
     lock = new ReentrantLock();
   }
 
   /**
    * Open TCP connection.
    *
-   * <p>Blocks until the connection is established or a fatal exception occurs.
+   * <p>If the channel can resolve specified route, the thread is blocked until the connection is
+   * established or the timeout occurs. If the route cannot be resolved, an exception is thrown.
    *
-   * <p>Discards the previous connection if there is already one.
+   * <p>Closes the previous connection if there is already one.
    *
-   * @param addr TCP server address.
+   * @param addr server socket address.
    * @throws NullPointerException if the provided address is null.
-   * @throws IOException if the I/O error occurs.
+   * @throws java.net.NoRouteToHostException if the channel cannot resolve specified address.
+   * @throws java.net.ConnectException if the channel resolve specified route, but the connection
+   *     times out.
+   * @throws IOException if some other I/O error occurs.
    */
-  public void open(InetSocketAddress addr) throws IOException, NullPointerException {
+  public void open(InetSocketAddress addr) throws IOException {
     if (addr == null) throw new NullPointerException();
     lock.lock();
 
     try {
+      if (isConnected()) channel.close();
       channel = SocketChannel.open(addr);
     } finally {
       lock.unlock();
@@ -69,7 +74,7 @@ public class BlockingSocketChannel {
   /**
    * Check whether the client is connected or not.
    *
-   * @return {@code true} if client connect, {@code false} otherwise.
+   * @return {@code true} if client connected.
    */
   public boolean isConnected() {
     return channel != null && channel.isConnected();
@@ -80,14 +85,16 @@ public class BlockingSocketChannel {
    *
    * <p>Adds a newline character to the end if there is none.
    *
-   * @param message message to write.
-   * @throws NotYetConnectedException if the client is disconnected.
+   * @param message byte sequence to write.
+   * @throws IllegalStateException if the channel has not yet opened.
+   * @throws NotYetConnectedException if the channel has not yet connected.
    * @throws NullPointerException if the provided message is null.
-   * @throws IOException if the I/O error occurs.
+   * @throws IOException if the connection was interrupted during writing or some other I/O error
+   *     occurs.
    */
-  public void write(byte[] message)
-      throws NotYetConnectedException, IOException, NullPointerException {
-    if (message == null) throw new NullPointerException();
+  public void write(byte[] message) throws IOException {
+    if (message == null) throw new NullPointerException("The message cannot be null.");
+    if (channel == null) throw new IllegalStateException("The channel is not open yet.");
 
     if (message[message.length - 1] != (byte) '\n') {
       message = Arrays.copyOf(message, message.length + 1);
@@ -100,17 +107,22 @@ public class BlockingSocketChannel {
   /**
    * Read all messages received since the last read.
    *
+   * <p>Blocks until at least one byte read.
+   *
    * @return list of read messages.
-   * @throws NotYetConnectedException if the client is disconnected.
+   * @throws IllegalStateException if the channel has not yet opened.
+   * @throws NotYetConnectedException if the channel has not yet connected.
+   * @throws IOException if the connection was interrupted during reading or some other I/O error
+   *     occurs.
    */
-  public List<byte[]> read() throws NotYetConnectedException, IOException {
+  public List<byte[]> read() throws IOException {
+    if (channel == null) throw new IllegalStateException("The channel is not opened yet.");
+
     List<byte[]> r = new ArrayList<>();
     ByteBuffer b = ByteBuffer.allocate(1024);
     int n = channel.read(b.clear());
 
-    for (int i = 0; i < n; i++)
-      if (buffer.add(b.get(i)))
-        r.add(buffer.get());
+    for (int i = 0; i < n; i++) if (buffer.add(b.get(i))) r.add(buffer.get());
 
     return r;
   }
@@ -118,11 +130,11 @@ public class BlockingSocketChannel {
   /**
    * Close connection.
    *
+   * @throws IllegalStateException if the channel has not yet opened.
    * @throws NotYetConnectedException if the client is disconnected.
    * @throws IOException if the I/O error occurs.
    */
-  public void close() throws NotYetConnectedException, IOException {
-    if (!isConnected()) throw new NotYetConnectedException();
+  public void close() throws IOException {
     channel.close();
   }
 
@@ -161,7 +173,7 @@ public class BlockingSocketChannel {
 
       buffer[pointer] = b;
       pointer = next(pointer);
-      size += 1;
+      size++;
 
       return false;
     }
