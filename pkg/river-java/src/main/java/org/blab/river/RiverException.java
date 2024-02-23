@@ -9,4 +9,8 @@ public class RiverException extends RuntimeException {
   public RiverException(String message) {
     super(message);
   }
+
+  public RiverException(Throwable cause) {
+    super(cause);
+  }
 }

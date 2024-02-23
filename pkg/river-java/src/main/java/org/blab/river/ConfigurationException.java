@@ -1,8 +1,9 @@
 package org.blab.river;
 
+import java.util.Map;
+
 public class ConfigurationException extends RiverException {
-  private String name;
-  private Object value;
+  private Map<String, String> violations;
 
   public ConfigurationException() {
     super();
@@ -12,17 +13,17 @@ public class ConfigurationException extends RiverException {
     super(message);
   }
 
-  public ConfigurationException(String name, Object value, String message) {
+  public ConfigurationException(Map<String, String> violations, String message) {
     super(message);
-    this.name = name;
-    this.value = value;
+    this.violations = violations;
   }
 
-  public String getName() {
-    return name;
+  public ConfigurationException(Map<String, String> violations) {
+    super();
+    this.violations = violations;
   }
 
-  public Object getValue() {
-    return value;
+  public Map<String, String> getViolations() {
+    return violations;
   }
 }

@@ -8,4 +8,8 @@ public class ConnectionException extends RiverException {
   public ConnectionException(String message) {
     super(message);
   }
+
+  public ConnectionException(Throwable cause) {
+    super(cause);
+  }
 }

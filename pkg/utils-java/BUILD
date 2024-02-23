@@ -5,7 +5,7 @@ java_library(
 
 java_library(
     name = "socket-channel",
-    srcs = ["src/main/java/org/blab/utils/BlockingSocketChannel.java"],
+    srcs = ["src/main/java/org/blab/utils/net/BlockingSocketChannel.java"],
 )
 
 java_test(

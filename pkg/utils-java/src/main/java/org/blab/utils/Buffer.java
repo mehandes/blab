@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @param <T> the type of elements held in this buffer
  */
+// TODO Create my own implementation with needed functionality
 public class Buffer<T> implements BlockingQueue<T> {
   private final Queue<T> data;
 

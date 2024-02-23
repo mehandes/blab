@@ -8,4 +8,8 @@ public class AuthenticationException extends ConnectionException {
   public AuthenticationException(String message) {
     super(message);
   }
+
+  public AuthenticationException(Throwable cause) {
+    super(cause);
+  }
 }

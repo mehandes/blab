@@ -1,12 +1,14 @@
 package org.blab.river;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /** Interface for consuming messages from River. */
 public interface RiverConsumer {
-  public static final String PROPERTIES_BASE = "river.consumer";
+  String PROPERTIES_BASE = "river.consumer";
+  String PROPERTIES_HOST = "river.consumer.host";
+  String PROPERTIES_PORT = "river.consumer.port";
 
   /**
    * Fetch data for the lades specified using {@link #subscribe(Set)} or {@link #subscribe(String)}
@@ -15,14 +17,15 @@ public interface RiverConsumer {
    * <p>This method returns immediately if there are records available. Otherwise, it will await the
    * passed timeout. If the timeout expires, an empty record set will be returned.
    *
-   * @param timeout - maximum time to block (0 <= t <= Long.MAX_VALUE)
+   * @param timeout maximum time to block (0 <= t <= Long.MAX_VALUE)
+   * @param unit time units
    * @return List of events since last fetch.
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
    *     exceptions) occurs.
    * @throws IllegalStateException if the consumer was closed before calling this method or if the
    *     consumer is not subscribed to any lade.
    */
-  List<Event> poll(Duration timeout);
+  List<Event> poll(long timeout, TimeUnit unit);
 
   /**
    * Subscribe to all lades from the presented set.
@@ -31,7 +34,7 @@ public interface RiverConsumer {
    *
    * <p>Throws an exception if invalid lades or pattern provided.
    *
-   * @param lades - lades to subscribe
+   * @param lades lades to subscribe
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
    *     exceptions).
    * @throws IllegalStateException if the consumer was closed before calling this method.
@@ -46,7 +49,7 @@ public interface RiverConsumer {
    *
    * <p>Throws an exception if invalid pattern provided.
    *
-   * @param pattern - pattern to subscribe
+   * @param pattern pattern to subscribe
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
    *     exceptions).
    * @throws IllegalStateException if the consumer was closed before calling this method.

@@ -1,4 +1,4 @@
-package org.blab.utils;
+package org.blab.utils.net;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
