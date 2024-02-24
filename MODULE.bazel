@@ -18,6 +18,7 @@ maven.install(
         # General dependencies
         #  Serialization
         "org.apache.avro:avro:1.11.3",
+        "com.google.code.gson:gson:2.10.1",
 
         #  Testing
         "org.junit.jupiter:junit-jupiter-api:5.10.2",

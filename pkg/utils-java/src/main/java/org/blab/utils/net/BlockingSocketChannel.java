@@ -1,5 +1,7 @@
 package org.blab.utils.net;
 
+import org.blab.utils.RingBuffer;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -24,7 +26,7 @@ public class BlockingSocketChannel {
   private SocketChannel channel;
 
   /** A buffer in which bytes will be stored. */
-  private final RingBuffer buffer;
+  private final RingBuffer<Byte> buffer;
 
   /** Common locker for all operations. */
   private final ReentrantLock lock;
@@ -40,7 +42,7 @@ public class BlockingSocketChannel {
    */
   public BlockingSocketChannel(int bs) {
     if (bs <= 0) throw new IllegalArgumentException("Buffer size must be positive.");
-    buffer = new RingBuffer(bs);
+    buffer = new RingBuffer<>(bs);
     lock = new ReentrantLock();
   }
 
@@ -122,7 +124,10 @@ public class BlockingSocketChannel {
     ByteBuffer b = ByteBuffer.allocate(1024);
     int n = channel.read(b.clear());
 
-    for (int i = 0; i < n; i++) if (buffer.add(b.get(i))) r.add(buffer.get());
+    for (int i = 0; i < n; i++)
+      if (b.get(i) == (byte) '\n')
+        r.add(cast(buffer.pollAvailable()));
+      else buffer.put(b.get(i));
 
     return r;
   }
@@ -138,52 +143,9 @@ public class BlockingSocketChannel {
     channel.close();
   }
 
-  /** A ring buffer for storing received bytes. */
-  private static class RingBuffer {
-    private final byte[] buffer;
-
-    /** Pointer associated with buffer. Points to one byte after last read byte. */
-    private int pointer;
-
-    /** Size of current sequence of bytes without terminator. Should not be changed directly. */
-    private int size;
-
-    /** Get index of element after provided. */
-    private int next(int i) {
-      return i == buffer.length - 1 ? 0 : i + 1;
-    }
-
-    /** Get index of element before provided. */
-    private int prev(int i) {
-      return i == 0 ? buffer.length - 1 : i - 1;
-    }
-
-    public RingBuffer(int size) {
-      buffer = new byte[size];
-    }
-
-    /**
-     * Add byte to buffer.
-     *
-     * @return {@code true} if buffer contains completed message and ready to perform {@link
-     *     #get()}.
-     */
-    public boolean add(byte b) {
-      if (b == (byte) '\n') return true;
-
-      buffer[pointer] = b;
-      pointer = next(pointer);
-      size++;
-
-      return false;
-    }
-
-    /** Get last {@link #size} bytes from buffer. */
-    public byte[] get() {
-      byte[] r = new byte[size];
-      for (int i = size - 1, j = prev(pointer); i >= 0; i--, j = prev(j)) r[i] = buffer[j];
-      size = 0;
-      return r;
-    }
+  private byte[] cast(List<Byte> a) {
+    byte[] bytes = new byte[a.size()];
+    for (int i = 0; i < a.size(); i++) bytes[i] = a.get(i);
+    return bytes;
   }
 }

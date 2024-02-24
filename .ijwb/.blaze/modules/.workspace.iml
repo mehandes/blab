@@ -10,6 +10,9 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../pkg/utils-java/src/test/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/blender/pkg/registry/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/blender/pkg/registry/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../pkg/river-java/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../prj/lambda/svc/demo/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../prj/lambda/svc/demo/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/../.." />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-blab" />

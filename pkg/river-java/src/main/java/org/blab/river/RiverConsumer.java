@@ -17,15 +17,14 @@ public interface RiverConsumer {
    * <p>This method returns immediately if there are records available. Otherwise, it will await the
    * passed timeout. If the timeout expires, an empty record set will be returned.
    *
-   * @param timeout maximum time to block (0 <= t <= Long.MAX_VALUE)
-   * @param unit time units
+   * @param timeout maximum time in milliseconds to block. Negative timeout treated as infinity.
    * @return List of events since last fetch.
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
    *     exceptions) occurs.
    * @throws IllegalStateException if the consumer was closed before calling this method or if the
    *     consumer is not subscribed to any lade.
    */
-  List<Event> poll(long timeout, TimeUnit unit);
+  List<Event> poll(long timeout);
 
   /**
    * Subscribe to all lades from the presented set.
@@ -66,6 +65,11 @@ public interface RiverConsumer {
    */
   void unsubscribe();
 
-  /** Close all connections with River. */
+  /**
+   * Close all connections with River.
+   *
+   * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection *
+   *     exceptions).
+   */
   void close();
 }

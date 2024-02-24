@@ -1,19 +1,23 @@
+package(default_visibility = ["//visibility:public"])
+
 java_library(
     name = "buffer",
-    srcs = ["src/main/java/org/blab/utils/Buffer.java"],
+    srcs = ["src/main/java/org/blab/utils/RingBuffer.java"],
 )
 
 java_library(
     name = "socket-channel",
     srcs = ["src/main/java/org/blab/utils/net/BlockingSocketChannel.java"],
-)
-
-java_test(
-    name = "BufferTest",
-    srcs = ["src/test/java/org/blab/utils/BufferTest.java"],
-    test_class = "org.blab.utils.BufferTest",
     deps = [
         ":buffer",
-        "@maven//:org_junit_jupiter_junit_jupiter_api",
+    ],
+)
+
+java_binary(
+    name = "BlockingSocketChannelTest",
+    srcs = ["src/test/java/org/blab/utils/BlockingSocketChannelTest.java"],
+    main_class = "org.blab.utils.BlockingSocketChannelTest",
+    deps = [
+        ":socket-channel",
     ],
 )

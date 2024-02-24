@@ -13,7 +13,7 @@ public class Status {
     return code;
   }
 
-  public Exception getError() {
+  public RiverException getError() {
     return error;
   }
 
