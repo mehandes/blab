@@ -4,15 +4,14 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../..">
       <sourceFolder url="file://$MODULE_DIR$/../../../pkg/river-java/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../pkg/river-java/src/test/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../pkg/types-java/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../pkg/types-java/src/test/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../pkg/utils-java/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../pkg/utils-java/src/test/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/blender/pkg/registry/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/blender/pkg/registry/src/test/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../pkg/river-java/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/lambda/svc/demo/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../prj/lambda/svc/demo/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/../.." />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-blab" />
@@ -22,8 +21,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="processed_junit-jupiter-api-5.10.2_95de90" level="project" />
     <orderEntry type="library" name="Runner_deploy-ijar_d63761b9" level="project" />
     <orderEntry type="library" name="processed_avro-1.11.3_ab5aa6c6" level="project" />
-    <orderEntry type="library" name="processed_junit-jupiter-api-5.10.2_95de90" level="project" />
   </component>
 </module>

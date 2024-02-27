@@ -144,7 +144,7 @@ public class RingBuffer<T> {
    *
    * <p>If the buffer is empty, waits for specified timeout.
    *
-   * <p>Negative timeout treated as infinity.
+   * <p>A negative timeout is treated as infinity.
    *
    * @param timeout timeout in milliseconds.
    * @return The last element if it appears within the specified timeout.
@@ -189,13 +189,13 @@ public class RingBuffer<T> {
    *
    * @return Last {@code c} elements, if exists.
    */
-  public Optional<List<T>> pollExactly(int c) {
-    if (c < 0 || c > data.length) throw new IllegalArgumentException();
+  public Optional<List<T>> pollExactly(int n) {
+    if (n < 0 || n > data.length) throw new IllegalArgumentException();
 
     locker.lock();
 
     try {
-      return Optional.ofNullable(pop(c));
+      return Optional.ofNullable(pop(n));
     } finally {
       locker.unlock();
     }
@@ -213,14 +213,14 @@ public class RingBuffer<T> {
    * @throws InterruptedException if thread interrupted during timeout.
    * @throws TimeoutException if timeout expired but there are still not enough elements.
    */
-  public List<T> pollExactly(int c, long timeout) throws TimeoutException, InterruptedException {
-    if (c < 0 || c > data.length) throw new IllegalArgumentException();
+  public List<T> pollExactly(int n, long timeout) throws TimeoutException, InterruptedException {
+    if (n < 0 || n > data.length) throw new IllegalArgumentException();
 
     locker.lock();
 
     try {
-      if (!awaitAtLeast(c, timeout)) throw new TimeoutException();
-      else return Objects.requireNonNull(pop(c));
+      if (!awaitAtLeast(n, timeout)) throw new TimeoutException();
+      else return Objects.requireNonNull(pop(n));
     } finally {
       locker.unlock();
     }
@@ -238,13 +238,13 @@ public class RingBuffer<T> {
    * @throws InterruptedException if thread interrupted during timeout.
    * @throws TimeoutException if timeout expired but there are still not enough elements.
    */
-  public List<T> pollAtLeast(int c, long timeout) throws TimeoutException, InterruptedException {
-    if (c < 0 || c > data.length) throw new IllegalArgumentException();
+  public List<T> pollAtLeast(int n, long timeout) throws TimeoutException, InterruptedException {
+    if (n < 0 || n > data.length) throw new IllegalArgumentException();
 
     locker.lock();
 
     try {
-      if (!awaitAtLeast(c, timeout)) throw new TimeoutException();
+      if (!awaitAtLeast(n, timeout)) throw new TimeoutException();
       else return Objects.requireNonNull(pop(size));
     } finally {
       locker.unlock();
@@ -252,14 +252,11 @@ public class RingBuffer<T> {
   }
 
   private boolean awaitAtLeast(int c, long timeout) throws InterruptedException {
-    if (timeout < 0)
-      while (size < c)
-        notEmpty.await();
+    if (timeout < 0) while (size < c) notEmpty.await();
     else {
       timeout = TimeUnit.MILLISECONDS.toNanos(timeout);
 
-      while (size < c && timeout > 0)
-        timeout = notEmpty.awaitNanos(timeout);
+      while (size < c && timeout > 0) timeout = notEmpty.awaitNanos(timeout);
     }
 
     return (c >= size);
