@@ -23,8 +23,9 @@ public interface RiverConsumer {
    *     exceptions) occurs.
    * @throws IllegalStateException if the consumer was closed before calling this method or if the
    *     consumer is not subscribed to any lade.
+   * @throws InterruptedException if the thread interrupted during timeout.
    */
-  List<Event> poll(long timeout);
+  List<Event> poll(long timeout) throws InterruptedException;
 
   /**
    * Subscribe to all lades from the presented set.
@@ -37,7 +38,7 @@ public interface RiverConsumer {
    * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection
    *     exceptions).
    * @throws IllegalStateException if the consumer was closed before calling this method.
-   * @throws IllegalArgumentException if invalid lades or pattern provided.
+   * @throws IllegalArgumentException if invalid lades provided.
    */
   void subscribe(Set<String> lades);
 

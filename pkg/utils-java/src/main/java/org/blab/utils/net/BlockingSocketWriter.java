@@ -58,13 +58,17 @@ public class BlockingSocketWriter implements Runnable {
     isRunning = true;
 
     while (error == null)
-      if (channel.isConnected())
-        try {
-          channel.write(buffer.pollOldest(-1));
-        } catch (InterruptedException | TimeoutException e) {
-          break;
-        }
-      else channel.reconnect();
+      try {
+        if (channel.isConnected())
+          try {
+            channel.write(buffer.pollOldest(-1));
+          } catch (InterruptedException | TimeoutException e) {
+            break;
+          }
+        else channel.reconnect();
+      } catch (BlockingSocketException e) {
+        error = e;
+      }
 
     isRunning = false;
   }

@@ -29,6 +29,8 @@ public class BlockingSocketReader implements Runnable {
   /** Indicated whether client running or not. */
   private boolean isRunning;
 
+  private boolean isReconnected;
+
   /**
    * @param channel channel that the client will read.
    */
@@ -60,6 +62,12 @@ public class BlockingSocketReader implements Runnable {
     }
   }
 
+  public boolean isReconnected() {
+    boolean r = isReconnected;
+    isReconnected = false;
+    return r;
+  }
+
   /**
    * Start reading loop.
    *
@@ -73,8 +81,15 @@ public class BlockingSocketReader implements Runnable {
     isRunning = true;
 
     while (error == null)
-      if (channel.isConnected()) buffer.put(channel.read());
-      else channel.reconnect();
+      try {
+        if (channel.isConnected()) buffer.put(channel.read());
+        else {
+          channel.reconnect();
+          isReconnected = true;
+        }
+      } catch (BlockingSocketException e) {
+        error = e;
+      }
 
     isRunning = false;
   }
