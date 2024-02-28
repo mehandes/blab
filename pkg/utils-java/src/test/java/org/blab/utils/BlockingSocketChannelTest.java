@@ -10,7 +10,7 @@ public class BlockingSocketChannelTest {
   public static void main(String[] args) throws IOException {
     BlockingSocketChannel bsc = new BlockingSocketChannel(1024);
 
-    bsc.open(new InetSocketAddress("172.16.1.110", 20041));
+    bsc.connect(new InetSocketAddress("172.16.1.110", 20041));
 
     bsc.write("name:VEPP/CCD/1M1L/x|method:subscr".getBytes(StandardCharsets.US_ASCII));
     bsc.write("name:VEPP/CCD/1M1L/z|method:subscr".getBytes(StandardCharsets.US_ASCII));

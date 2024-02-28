@@ -38,7 +38,19 @@ public class RingBuffer<T> {
     if (e == null) throw new NullPointerException();
     data[pointer] = e;
     pointer = next(pointer, 1);
-    size++;
+
+    if (size < data.length) size++;
+  }
+
+  private void addAll(List<T> es) {
+    if (es == null) throw new NullPointerException();
+
+    for (T e : es) {
+      data[pointer] = e;
+      pointer = next(pointer, 1);
+    }
+
+    size = size <= (data.length - es.size()) ? size + es.size() : data.length;
   }
 
   @SuppressWarnings("unchecked")
@@ -53,6 +65,14 @@ public class RingBuffer<T> {
     size--;
     pointer = prev(pointer, 1);
     return (T) data[pointer];
+  }
+
+  @SuppressWarnings("unchecked")
+  private T popOldest() {
+    if (size == 0) return null;
+    int i = prev(pointer, size);
+    size--;
+    return (T) data[i];
   }
 
   @SuppressWarnings("unchecked")
@@ -110,6 +130,25 @@ public class RingBuffer<T> {
   }
 
   /**
+   * Append elements to the end of the buffer.
+   *
+   * <p>If the buffer size is equal to capacity, the oldest element will be overwritten.
+   *
+   * @param es elements to append.
+   * @throws NullPointerException if provided list is null.
+   */
+  public void put(List<T> es) {
+    locker.lock();
+
+    try {
+      addAll(es);
+      notEmpty.signalAll();
+    } finally {
+      locker.unlock();
+    }
+  }
+
+  /**
    * Retrieve but does not remove the last element.
    *
    * @return The last element, if exists.
@@ -140,6 +179,21 @@ public class RingBuffer<T> {
   }
 
   /**
+   * Retrieve and remove the oldest element. The {@link Optional} is empty if the buffer is empty.
+   *
+   * @return The oldest element, if exists.
+   */
+  public Optional<T> pollOldest() {
+    locker.lock();
+
+    try {
+      return Optional.ofNullable(popOldest());
+    } finally {
+      locker.unlock();
+    }
+  }
+
+  /**
    * Retrieve and remove the last element.
    *
    * <p>If the buffer is empty, waits for specified timeout.
@@ -163,6 +217,35 @@ public class RingBuffer<T> {
 
       if (!r) throw new TimeoutException();
       else return Objects.requireNonNull(pop());
+    } finally {
+      locker.unlock();
+    }
+  }
+
+  /**
+   * Retrieve and remove the oldest element.
+   *
+   * <p>If the buffer is empty, waits for specified timeout.
+   *
+   * <p>A negative timeout is treated as infinity.
+   *
+   * @param timeout timeout in milliseconds.
+   * @return The oldest element if it appears within the specified timeout.
+   * @throws InterruptedException if thread interrupted during timeout.
+   * @throws TimeoutException if timeout expired but buffer is still empty.
+   */
+  public T pollOldest(long timeout) throws InterruptedException, TimeoutException {
+    locker.lock();
+
+    try {
+      boolean r = true;
+
+      if (size == 0)
+        if (timeout < 0) notEmpty.await();
+        else r = notEmpty.await(timeout, TimeUnit.MILLISECONDS);
+
+      if (!r) throw new TimeoutException();
+      else return Objects.requireNonNull(popOldest());
     } finally {
       locker.unlock();
     }

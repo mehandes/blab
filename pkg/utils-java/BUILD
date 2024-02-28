@@ -6,8 +6,8 @@ java_library(
 )
 
 java_library(
-    name = "socket-channel",
-    srcs = ["src/main/java/org/blab/utils/net/BlockingSocketChannel.java"],
+    name = "net",
+    srcs = ["src/main/java/org/blab/utils/net/*.java"],
     deps = [
         ":buffer",
     ],
@@ -18,6 +18,15 @@ java_binary(
     srcs = ["src/test/java/org/blab/utils/BlockingSocketChannelTest.java"],
     main_class = "org.blab.utils.BlockingSocketChannelTest",
     deps = [
-        ":socket-channel",
+        ":net",
+    ],
+)
+
+java_test(
+    name = "RingBufferTest",
+    srcs = ["src/test/java/org/blab/utils/RingBufferTest.java"],
+    deps = [
+        ":buffer",
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
     ],
 )

@@ -29,6 +29,9 @@ public class BlockingSocketChannel {
   /** Socket which actually performs I/O operations. In blocking mode by default. */
   private SocketChannel socket;
 
+  /** The remote address to which the last connection attempt was made. */
+  private InetSocketAddress lastAddress;
+
   /** A buffer in which message remnants are cached. */
   private final RingBuffer<Byte> cache;
 
@@ -66,21 +69,28 @@ public class BlockingSocketChannel {
    * @throws NullPointerException if the provided address is null.
    * @throws BlockingSocketException if any socket access errors occur.
    */
-  public void open(InetSocketAddress address) {
+  public BlockingSocketChannel connect(InetSocketAddress address) {
     if (address == null) throw new NullPointerException();
 
     readLock.lock();
     writeLock.lock();
 
     try {
+      lastAddress = address;
       if (socket != null) socket.connect(address);
       else socket = SocketChannel.open(address);
+      return this;
     } catch (IOException e) {
       throw new BlockingSocketException(e);
     } finally {
       readLock.unlock();
       writeLock.unlock();
     }
+  }
+
+  /** Try to reconnect to previously connected address. Skips if connection already established. */
+  public BlockingSocketChannel reconnect() {
+    return isConnected() ? this : connect(lastAddress);
   }
 
   /**
@@ -98,14 +108,13 @@ public class BlockingSocketChannel {
    * <p>Adds a newline character to the end if there is none.
    *
    * @param message byte sequence to write.
-   * @throws IllegalStateException if the channel has not yet opened.
-   * @throws NotYetConnectedException if the channel has not yet connected.
+   * @throws IllegalStateException if the channel has not yet connected.
    * @throws NullPointerException if the provided message is null.
    * @throws BlockingSocketException if any socket access errors occur.
    */
   public void write(byte[] message) {
     if (message == null) throw new NullPointerException("The message cannot be null.");
-    if (socket == null) throw new IllegalStateException("The channel is not open yet.");
+    if (!socket.isConnected()) throw new IllegalStateException("The channel is not connected yet.");
 
     writeLock.lock();
 
@@ -131,12 +140,11 @@ public class BlockingSocketChannel {
    * <p>Blocks until at least one byte read.
    *
    * @return list of read messages.
-   * @throws IllegalStateException if the channel has not yet opened.
-   * @throws NotYetConnectedException if the channel has not yet connected.
+   * @throws IllegalStateException if the channel has not yet connected.
    * @throws BlockingSocketException if any socket access errors occur.
    */
   public List<byte[]> read() {
-    if (socket == null) throw new IllegalStateException("The channel is not opened yet.");
+    if (!isConnected()) throw new IllegalStateException("The channel is not opened yet.");
 
     readLock.lock();
 
@@ -161,11 +169,11 @@ public class BlockingSocketChannel {
   /**
    * Close the connection.
    *
-   * @throws IllegalStateException if the channel has not yet opened.
+   * @throws IllegalStateException if the channel has not yet connected.
    * @throws BlockingSocketException if any socket access errors occur.
    */
   public void close() {
-    if (socket == null) throw new IllegalStateException("The channel is not opened yet.");
+    if (!isConnected()) throw new IllegalStateException("The channel is not opened yet.");
 
     readLock.lock();
     writeLock.lock();
@@ -179,6 +187,24 @@ public class BlockingSocketChannel {
       readLock.unlock();
       writeLock.unlock();
     }
+  }
+
+  /**
+   * Creates new {@link BlockingSocketReader} associated with that channel.
+   *
+   * @return Reader for that channel.
+   */
+  public BlockingSocketReader reader() {
+    return new BlockingSocketReader(this);
+  }
+
+  /**
+   * Creates new {@link BlockingSocketWriter} associated with that channel.
+   *
+   * @return Writer for that channel.
+   */
+  public BlockingSocketWriter writer() {
+    return new BlockingSocketWriter(this);
   }
 
   private byte[] cast(List<Byte> a) {
