@@ -11,24 +11,6 @@ java_library(
     deps = [
         ":river-java",
         "//pkg/utils-java:buffer",
-        "//pkg/utils-java:socket-channel",
-    ],
-)
-
-# java_library(
-#     name = "mqtt",
-#     srcs = glob(["src/main/java/org/blab/river/mqtt/*.java"]),
-#     deps = [
-#         ":river-java"
-#     ]
-# )
-
-java_binary(
-    name = "VcasConsumerTest",
-    srcs = ["src/test/java/org/blab/river/vcas/VcasConsumerTest.java"],
-    main_class = "org.blab.river.vcas.VcasConsumerTest",
-    deps = [
-        ":river-java",
-        ":vcas",
+        "//pkg/utils-java:net",
     ],
 )

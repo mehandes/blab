@@ -24,6 +24,8 @@ public class VcasConsumer implements RiverConsumer {
   private boolean isClosed;
 
   public VcasConsumer(Properties properties) {
+    validateProperties(properties);
+
     channel = new BlockingSocketChannel(1024);
     readLock = new ReentrantLock();
     writeLock = new ReentrantLock();
@@ -33,9 +35,22 @@ public class VcasConsumer implements RiverConsumer {
     writer = channel.writer();
     reader = channel.reader();
 
-    channel.connect(new InetSocketAddress("localhost", 1234));
+    channel.connect(
+        new InetSocketAddress(
+            (String) properties.get("hostname"), (Integer) properties.get("port")));
+
     new Thread(writer).start();
     new Thread(reader).start();
+  }
+
+  private void validateProperties(Properties properties) {
+    Map<String, String> violations = new HashMap<>();
+
+    if (!properties.containsKey("hostname")) violations.put("hostname", "Not found.");
+    if (!properties.containsKey("port")) violations.put("port", "Not found.");
+    if (!(properties.get("port") instanceof Integer)) violations.put("port", "Invalid.");
+
+    if (!violations.isEmpty()) throw new ConfigurationException(violations);
   }
 
   @Override
@@ -46,6 +61,7 @@ public class VcasConsumer implements RiverConsumer {
     if (lades.isEmpty()) throw new IllegalStateException("There are no subscriptions yet.");
 
     try {
+      if (reader.isReconnected()) subscribe(lades);
       return reader.poll(timeout).stream().map(this::parseMessage).toList();
     } catch (BlockingSocketException e) {
       throw new RiverException(e);

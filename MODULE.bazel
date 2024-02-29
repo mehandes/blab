@@ -28,6 +28,8 @@ maven.install(
         "org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1",
 
         # Projects dependencies
+        #  Lambda Demo
+        "org.apache.commons:commons-math3:3.6.1",
     ],
     repositories = [
         "https://repo1.maven.org/maven2",

@@ -6,5 +6,6 @@ java_binary(
         "//pkg/river-java",
         "//pkg/river-java:vcas",
         "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_commons_commons_math3",
     ],
 )

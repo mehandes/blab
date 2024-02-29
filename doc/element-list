@@ -1,0 +1,10 @@
+org.blab.blender.registry
+org.blab.blender.registry.domain
+org.blab.blender.registry.repository
+org.blab.blender.registry.service
+org.blab.lambda.demo
+org.blab.river
+org.blab.river.vcas
+org.blab.types
+org.blab.utils
+org.blab.utils.net
