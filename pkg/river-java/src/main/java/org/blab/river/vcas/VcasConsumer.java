@@ -26,7 +26,7 @@ public class VcasConsumer implements RiverConsumer {
   public VcasConsumer(Properties properties) {
     validateProperties(properties);
 
-    channel = new BlockingSocketChannel(1024);
+    channel = new BlockingSocketChannel(2048);
     readLock = new ReentrantLock();
     writeLock = new ReentrantLock();
 
@@ -35,9 +35,13 @@ public class VcasConsumer implements RiverConsumer {
     writer = channel.writer();
     reader = channel.reader();
 
-    channel.connect(
-        new InetSocketAddress(
-            (String) properties.get("hostname"), (Integer) properties.get("port")));
+    try {
+      channel.connect(
+          new InetSocketAddress(
+              (String) properties.get("hostname"), (Integer) properties.get("port")));
+    } catch (BlockingSocketException e) {
+      throw new RiverException(e);
+    }
 
     new Thread(writer).start();
     new Thread(reader).start();
@@ -91,28 +95,23 @@ public class VcasConsumer implements RiverConsumer {
 
     if (isClosed) throw new IllegalStateException("The consumer was closed.");
 
-    if (lades.addAll(l)) {
-      try {
-        l.stream()
-            .filter(lade -> !lades.contains(lade))
-            .forEach(
-                lade -> {
-                  lades.add(validateLade(lade));
-                  requestSubscribe(lade);
-                });
-      } catch (BlockingSocketException e) {
+    try {
+      l.forEach(this::validateLade);
+      l.forEach(lade -> {
+        if (lades.add(lade))
+          requestSubscribe(lade);
+      });
+    } catch (BlockingSocketException e) {
         throw new RiverException(e);
       } finally {
         writeLock.unlock();
       }
-    }
   }
 
-  private String validateLade(String lade) {
+  private void validateLade(String lade) {
     if (lade.isBlank())
       throw new IllegalArgumentException(String.format("Invalid lade provided: %s", lade));
 
-    return lade;
   }
 
   @Override

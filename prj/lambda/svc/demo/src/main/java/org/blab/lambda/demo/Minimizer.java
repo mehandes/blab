@@ -1,44 +1,117 @@
 package org.blab.lambda.demo;
 
 import org.apache.commons.math3.fitting.leastsquares.*;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.Pair;
 import org.blab.river.Event;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Minimizer implements Lambda<Event, List<Event>> {
+  private HashMap<String, Double> targets;
   private Configuration configuration;
   private Function function;
   private LeastSquaresOptimizer optimizer;
 
+  public Minimizer() {
+    targets = new HashMap<>();
+    function = new Function();
+    optimizer =
+        new LevenbergMarquardtOptimizer()
+            .withCostRelativeTolerance(1.0e-12)
+            .withParameterRelativeTolerance(1.0e-12);
+  }
+
   @Override
   public List<Event> apply(Event event) {
-    LeastSquaresProblem problem =
-        new LeastSquaresBuilder()
-            .start(new double[] {1, 2}) // Configured
-            .model(function) // Calculated
-            .target(new double[] {}) // Estimated
-            .weight(null) // Configured
-            .maxEvaluations(1000) // Configured
-            .maxIterations(1000) // Configured
-            .build();
+    if (configuration != null
+        && extractTarget(event)
+        && targets.size() == configuration.frames().size()) {
 
-    GaussNewtonOptimizer optimizer = new GaussNewtonOptimizer();
-    LeastSquaresOptimizer.Optimum solution = optimizer.optimize(problem);
+      LeastSquaresProblem problem =
+          new LeastSquaresBuilder()
+              .model(function)
+              .target(collectTargets())
+              .start(new double[] {configuration.sx(), configuration.sy()})
+              .maxIterations(100)
+              .maxEvaluations(100)
+              .lazyEvaluation(false)
+              .build();
 
-    return null;
+      LeastSquaresOptimizer.Optimum solution = optimizer.optimize(problem);
+
+      System.out.printf(
+          "Solution: (%f, %f)\n" + "RMS: %f\n" + "Iterations: %d\n" + "Evaluations: %d\n",
+          solution.getPoint().getEntry(0),
+          solution.getPoint().getEntry(1),
+          solution.getRMS(),
+          solution.getIterations(),
+          solution.getEvaluations());
+
+      return null;
+    }
+
+    return Collections.emptyList();
+  }
+
+  private double[] collectTargets() {
+    double[] t = new double[configuration.frames().size()];
+
+    for (int i = 0; i < configuration.frames().size(); ++i) {
+      double j = targets.get(configuration.frames().get(i).lade());
+      t[i] = j * j;
+    }
+
+    return t;
+  }
+
+  private boolean extractTarget(Event event) {
+    try {
+      Double value =
+          Double.parseDouble(
+              Arrays.stream(new String(event.message(), StandardCharsets.US_ASCII).split("\\|"))
+                  .map(s -> s.split(":"))
+                  .collect(Collectors.toMap(s -> s[0], s -> s[1]))
+                  .get("val"));
+
+      targets.put(event.lade(), value);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
+    }
   }
 
   @Override
   public void refresh(Configuration p) {
+    targets = new HashMap<>();
     configuration = p;
   }
 
   class Function implements MultivariateJacobianFunction {
     @Override
     public Pair<RealVector, RealMatrix> value(RealVector realVector) {
-      return null;
+      double[] values = new double[configuration.frames().size()];
+      double[][] derivatives = new double[configuration.frames().size()][2];
+
+      for (int i = 0; i < configuration.frames().size(); i++) {
+        Configuration.Frame f = configuration.frames().get(i);
+
+        values[i] =
+            realVector.getEntry(0) * f.beta()
+                + (realVector.getEntry(1) * f.etta() * realVector.getEntry(1) * f.etta());
+        derivatives[i][0] = f.beta();
+        derivatives[i][1] = f.etta() * f.etta() * 2.0 * realVector.getEntry(1);
+      }
+
+      return Pair.create(new ArrayRealVector(values), new Array2DRowRealMatrix(derivatives));
     }
   }
 }

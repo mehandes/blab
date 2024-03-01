@@ -342,6 +342,6 @@ public class RingBuffer<T> {
       while (size < c && timeout > 0) timeout = notEmpty.awaitNanos(timeout);
     }
 
-    return (c >= size);
+    return c <= size;
   }
 }
