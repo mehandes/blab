@@ -1,3 +1,5 @@
 bazel-*
 .vscode
 .ijwb
+
+MODULE.bazel.lock

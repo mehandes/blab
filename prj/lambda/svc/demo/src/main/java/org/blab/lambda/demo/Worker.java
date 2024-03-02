@@ -3,6 +3,8 @@ package org.blab.lambda.demo;
 import org.blab.river.Event;
 import org.blab.river.RiverConsumer;
 import org.blab.river.RiverException;
+import org.blab.river.RiverProducer;
+import org.blab.river.mqtt.MqttProducer;
 import org.blab.river.vcas.VcasConsumer;
 
 import java.util.Collections;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 public class Worker implements Consumer<Configuration> {
   private final Lambda<Event, List<Event>> lambda;
   private RiverConsumer consumer;
+  private RiverProducer producer;
   private Configuration configuration;
   private RiverException error;
 
@@ -37,7 +40,7 @@ public class Worker implements Consumer<Configuration> {
         if (consumer == null) continue;
 
         List<Event> events = consumer.poll(-1);
-        events.forEach(lambda::apply);
+        events.forEach(event -> lambda.apply(event).forEach(r -> producer.send(r, null)));
       } catch (Exception e) {
         throw new RuntimeException(e);
       } finally {
@@ -59,6 +62,11 @@ public class Worker implements Consumer<Configuration> {
       if (configuration.frames().isEmpty()) throw new RuntimeException("Empty frames.");
 
       try {
+        Properties producerProperties = new Properties();
+        producerProperties.put("hostname", "172.16.1.201");
+        producerProperties.put("port", 1883);
+
+        producer = new MqttProducer(producerProperties);
         consumer = new VcasConsumer(properties);
         consumer.subscribe(
             this.configuration.frames().stream()

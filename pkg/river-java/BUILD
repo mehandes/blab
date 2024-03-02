@@ -14,3 +14,13 @@ java_library(
         "//pkg/utils-java:net",
     ],
 )
+
+java_library(
+    name = "mqtt",
+    srcs = glob(["src/main/java/org/blab/river/mqtt/*.java"]),
+    deps = [
+        ":river-java",
+        "//pkg/utils-java:buffer",
+        "@maven//:org_eclipse_paho_org_eclipse_paho_mqttv5_client",
+    ],
+)

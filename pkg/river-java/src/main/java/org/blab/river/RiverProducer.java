@@ -16,6 +16,11 @@ public interface RiverProducer {
    */
   void send(Event event, Callback<Event> callback);
 
-  /** Close all connections with River. Waits for all pending tasks to complete. */
+  /**
+   * Close all connections with River. Waits for all pending tasks to complete.
+   *
+   * @throws RiverException if there are unrecoverable errors (e.g. configuration or connection *
+   *    *     exceptions).
+   * */
   void close();
 }

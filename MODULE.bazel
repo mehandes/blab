@@ -19,6 +19,7 @@ maven.install(
         #  Serialization
         "org.apache.avro:avro:1.11.3",
         "com.google.code.gson:gson:2.10.1",
+        "org.json:json:20240205",
 
         #  Testing
         "org.junit.jupiter:junit-jupiter-api:5.10.2",
@@ -30,6 +31,9 @@ maven.install(
         # Projects dependencies
         #  Lambda Demo
         "org.apache.commons:commons-math3:3.6.1",
+
+        #  River MQTT
+        "org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5",
     ],
     repositories = [
         "https://repo1.maven.org/maven2",

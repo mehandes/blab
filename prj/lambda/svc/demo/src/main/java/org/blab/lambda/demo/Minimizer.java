@@ -16,10 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Minimizer implements Lambda<Event, List<Event>> {
+  private final Function function;
+  private final LeastSquaresOptimizer optimizer;
+
   private HashMap<String, Double> targets;
   private Configuration configuration;
-  private Function function;
-  private LeastSquaresOptimizer optimizer;
 
   public Minimizer() {
     targets = new HashMap<>();
@@ -48,15 +49,13 @@ public class Minimizer implements Lambda<Event, List<Event>> {
 
       LeastSquaresOptimizer.Optimum solution = optimizer.optimize(problem);
 
-      System.out.printf(
-          "Solution: (%f, %f)\n" + "RMS: %f\n" + "Iterations: %d\n" + "Evaluations: %d\n",
-          solution.getPoint().getEntry(0),
-          solution.getPoint().getEntry(1),
-          solution.getRMS(),
-          solution.getIterations(),
-          solution.getEvaluations());
-
-      return null;
+      return List.of(
+          new Event(
+              "calc.cams.em",
+              String.valueOf(solution.getPoint().getEntry(0) * solution.getPoint().getEntry(0)).getBytes(StandardCharsets.US_ASCII)),
+          new Event(
+              "calc.cams.es",
+              String.valueOf(solution.getPoint().getEntry(1) * solution.getPoint().getEntry(1)).getBytes(StandardCharsets.US_ASCII)));
     }
 
     return Collections.emptyList();

@@ -97,21 +97,20 @@ public class VcasConsumer implements RiverConsumer {
 
     try {
       l.forEach(this::validateLade);
-      l.forEach(lade -> {
-        if (lades.add(lade))
-          requestSubscribe(lade);
-      });
+      l.forEach(
+          lade -> {
+            if (lades.add(lade)) requestSubscribe(lade);
+          });
     } catch (BlockingSocketException e) {
-        throw new RiverException(e);
-      } finally {
-        writeLock.unlock();
-      }
+      throw new RiverException(e);
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   private void validateLade(String lade) {
     if (lade.isBlank())
       throw new IllegalArgumentException(String.format("Invalid lade provided: %s", lade));
-
   }
 
   @Override

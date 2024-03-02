@@ -10,7 +10,6 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/blender/pkg/registry/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/blender/pkg/registry/src/test/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../prj/lambda/svc/demo/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../pkg/river-java/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../.." />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-blab" />
@@ -24,6 +23,8 @@
     <orderEntry type="library" name="Runner_deploy-ijar_d63761b9" level="project" />
     <orderEntry type="library" name="processed_avro-1.11.3_ab5aa6c6" level="project" />
     <orderEntry type="library" name="processed_commons-math3-3.6.1_1ca44aa" level="project" />
+    <orderEntry type="library" name="processed_json-20240205_63fa7c84" level="project" />
+    <orderEntry type="library" name="processed_org.eclipse.paho.mqttv5.client-1.2.5_9fdee1b0" level="project" />
     <orderEntry type="library" name="processed_gson-2.10.1_7a1c3d4a" level="project" />
   </component>
 </module>
