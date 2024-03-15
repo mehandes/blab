@@ -1,7 +1,8 @@
 java_library(
     name = "types-java",
-    srcs = ["src/main/java/org/blab/types/TypeMapper.java"],
+    srcs = glob(["src/main/java/org/blab/types/*.java"]),
     deps = [
+        "@maven//:com_google_code_gson_gson",
         "@maven//:org_apache_avro_avro",
     ],
 )

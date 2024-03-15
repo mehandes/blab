@@ -43,7 +43,7 @@ public class JsonMapperTest {
   public void mapToAvroUnsupportedSchema() {}
 
   @Test
-  public void mapToAvroObjectDoesNotSufisfySchema() {}
+  public void mapToAvroObjectDoesNotSutisfySchema() {}
 
   @Test
   public void mapFromAvro() {}

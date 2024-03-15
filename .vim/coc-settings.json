@@ -1,0 +1,6 @@
+{
+  "java.project.sourcePaths": [
+    "prj/blender/pkg/registry/src/test/java",
+    "prj/blender/pkg/registry/src/main/java"
+  ]
+}
