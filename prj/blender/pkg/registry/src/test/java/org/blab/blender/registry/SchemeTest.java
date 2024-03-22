@@ -10,16 +10,16 @@ public class SchemeTest {
     Assertions.assertThrows(
         NullPointerException.class,
         () -> {
-          Scheme.validate(null);
+          SchemaValidator.validate(null);
         });
   }
 
   @Test
   public void validateSchemaMisspelled() {
     Assertions.assertThrows(
-        IllegalArgumentException.class,
+        ValidationException.class,
         () -> {
-          Scheme.validate("schema");
+          SchemaValidator.validate("schema");
         });
   }
 
@@ -29,9 +29,9 @@ public class SchemeTest {
         .doubleType();
 
     Assertions.assertThrows(
-        IllegalArgumentException.class,
+        ValidationException.class,
         () -> {
-          Scheme.validate(schema.toString());
+          SchemaValidator.validate(schema.toString());
         });
   }
 
@@ -44,7 +44,7 @@ public class SchemeTest {
 
     Assertions.assertEquals(
         schema,
-        Scheme.validate(schema.toString()));
+            SchemaValidator.validate(schema.toString()));
   }
 
   @Test
@@ -56,7 +56,7 @@ public class SchemeTest {
 
     Assertions.assertEquals(
         schema,
-        Scheme.validate(schema.toString()));
+            SchemaValidator.validate(schema.toString()));
   }
 
   @Test
@@ -67,6 +67,6 @@ public class SchemeTest {
 
     Assertions.assertEquals(
         schema,
-        Scheme.validate(schema.toString()));
+        SchemaValidator.validate(schema.toString()));
   }
 }

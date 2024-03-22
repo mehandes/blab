@@ -24,6 +24,7 @@ maven.install(
         #  Testing
         "org.junit.jupiter:junit-jupiter-api:5.10.2",
         "junit:junit:4.13.2",
+        "org.mockito:mockito-core:5.11.0",
 
         #  Logging
         "org.slf4j:slf4j-api:2.0.12",
@@ -35,6 +36,9 @@ maven.install(
 
         #  River MQTT
         "org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5",
+
+        # Registry
+        "org.postgresql:postgresql:42.7.3",
     ],
     repositories = [
         "https://repo1.maven.org/maven2",
