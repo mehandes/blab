@@ -1,6 +1,6 @@
 java_library(
     name = "registry",
-    srcs = glob(["src/main/java/org/blab/blender/registry/*.java"]),
+    srcs = glob(["src/main/java/org/blab/blender/registry/**/*.java"]),
     deps = [
         "@maven//:org_apache_avro_avro",
         "@maven//:org_postgresql_postgresql",

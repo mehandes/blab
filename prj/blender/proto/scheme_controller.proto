@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package org.blab.blender.registry;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+import "scheme.proto";
+
+service SchemeController {
+  rpc FindAll(google.protobuf.Empty) returns (SchemeSet);
+  rpc FindByName(google.protobuf.StringValue) returns (SchemeSet);
+  rpc FindByNamespace(google.protobuf.StringValue) returns (SchemeSet);
+  rpc FindById(google.protobuf.StringValue) returns (OptionalScheme);
+  rpc FindByFullName(FullName) returns (OptionalScheme);
+  rpc ExistsById(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+  rpc ExistsByFullName(FullName) returns (google.protobuf.BoolValue);
+  rpc Count(google.protobuf.Empty) returns (google.protobuf.UInt32Value);
+  rpc Create(Scheme) returns (google.protobuf.Empty);
+  rpc Update(Scheme) returns (google.protobuf.Empty);
+  rpc RemoveById(google.protobuf.StringValue) returns (google.protobuf.Empty);
+}

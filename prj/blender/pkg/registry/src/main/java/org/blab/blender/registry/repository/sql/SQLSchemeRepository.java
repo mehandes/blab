@@ -1,4 +1,7 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.repository.sql;
+
+import org.blab.blender.registry.Scheme;
+import org.blab.blender.registry.repository.SchemeRepository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -9,16 +12,23 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public class DefaultSchemeRepository implements SchemeRepository {
+public class SQLSchemeRepository implements SchemeRepository {
   private final DataSource dataSource;
 
-  public DefaultSchemeRepository(DataSource dataSource) {
+  public SQLSchemeRepository(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
   @Override
   public Set<Scheme> findAll() throws SQLException {
-    String query = "SELECT * FROM scheme";
+    String query =
+        "SELECT "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
+            + "FROM scheme";
+
     Set<Scheme> result = new HashSet<>();
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
@@ -30,7 +40,15 @@ public class DefaultSchemeRepository implements SchemeRepository {
 
   @Override
   public Set<Scheme> findByName(String name) throws SQLException {
-    String query = "SELECT * FROM scheme WHERE name_ = '%s'";
+    String query =
+        "SELECT "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
+            + "FROM scheme "
+            + "WHERE scheme.name_ = '%s'";
+
     Set<Scheme> result = new HashSet<>();
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
@@ -42,7 +60,15 @@ public class DefaultSchemeRepository implements SchemeRepository {
 
   @Override
   public Set<Scheme> findByNamespace(String namespace) throws SQLException {
-    String query = "SELECT * FROM scheme WHERE namespace_ = '%s'";
+    String query =
+        "SELECT "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
+            + "FROM scheme "
+            + "WHERE scheme.namespace_ = '%s'";
+
     Set<Scheme> result = new HashSet<>();
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
@@ -54,7 +80,14 @@ public class DefaultSchemeRepository implements SchemeRepository {
 
   @Override
   public Optional<Scheme> findById(UUID id) throws SQLException {
-    String query = "SELECT * FROM scheme WHERE id_ = '%s'";
+    String query =
+        "SELECT "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
+            + "FROM scheme "
+            + "WHERE scheme.id_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
       ResultSet resultSet = statement.executeQuery(String.format(query, id.toString()));
@@ -64,7 +97,14 @@ public class DefaultSchemeRepository implements SchemeRepository {
 
   @Override
   public Optional<Scheme> findByFullName(String name, String namespace) throws SQLException {
-    String query = "SELECT * FROM scheme WHERE name_ = '%s' AND namespace_ = '%s'";
+    String query =
+        "SELECT "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
+            + "FROM scheme "
+            + "WHERE scheme.name_ = '%s' AND scheme.namespace_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
       ResultSet resultSet = statement.executeQuery(String.format(query, name, namespace));
@@ -74,17 +114,18 @@ public class DefaultSchemeRepository implements SchemeRepository {
 
   @Override
   public boolean existsById(UUID id) throws SQLException {
-    String query = "SELECT COUNT(*) AS total FROM scheme WHERE id_ = '%s'";
+    String query = "SELECT COUNT(*) FROM scheme WHERE scheme.id_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
       ResultSet resultSet = statement.executeQuery(String.format(query, id.toString()));
-      return resultSet.next() && resultSet.getInt("total") == 1;
+      return resultSet.next() && resultSet.getInt("count") == 1;
     }
   }
 
   @Override
   public boolean existsByFullName(String name, String namespace) throws SQLException {
-    String query = "SELECT COUNT(*) FROM scheme WHERE name_ = '%s' AND namespace_ = '%s'";
+    String query =
+        "SELECT COUNT(*) FROM scheme WHERE scheme.name_ = '%s' AND scheme.namespace_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
       ResultSet resultSet = statement.executeQuery(String.format(query, name, namespace));

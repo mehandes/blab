@@ -1,5 +1,7 @@
 package org.blab.blender.registry;
 
+import org.blab.blender.registry.validation.SchemaValidator;
+import org.blab.blender.registry.validation.ValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.apache.avro.*;
 import org.junit.Test;

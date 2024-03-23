@@ -1,17 +1,21 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.repository.sql;
 
-import javax.sql.DataSource;
+import org.blab.blender.registry.Channel;
+import org.blab.blender.registry.repository.ChannelRepository;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
+import javax.sql.DataSource;
 
-public class DefaultChannelRepository implements ChannelRepository {
+public class SQLChannelRepository implements ChannelRepository {
   private final DataSource dataSource;
 
-  public DefaultChannelRepository(DataSource dataSource) {
+  public SQLChannelRepository(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
@@ -19,11 +23,11 @@ public class DefaultChannelRepository implements ChannelRepository {
   public Set<Channel> findAll() throws SQLException {
     String query =
         "SELECT "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_"
             + "FROM channel JOIN scheme ON channel.scheme_id_ = scheme.id_";
 
     Set<Channel> result = new HashSet<>();
@@ -37,66 +41,22 @@ public class DefaultChannelRepository implements ChannelRepository {
   }
 
   @Override
-  public Set<Channel> findBySchemeName(String schemeName) throws SQLException {
+  public Set<Channel> findBySchemeId(UUID schemeId) throws SQLException {
     String query =
         "SELECT "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_"
             + "FROM channel JOIN scheme ON channel.scheme_id_ = scheme.id_ "
-            + "WHERE scheme.name_ = '%s'";
+            + "WHERE scheme.id_ = '%s'";
 
     Set<Channel> result = new HashSet<>();
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      ResultSet resultSet = statement.executeQuery(String.format(query, schemeName));
+      ResultSet resultSet = statement.executeQuery(String.format(query, schemeId.toString()));
 
-      while (resultSet.next()) result.add(Channel.map(resultSet));
-      return result;
-    }
-  }
-
-  @Override
-  public Set<Channel> findBySchemeNamespace(String schemeNamespace) throws SQLException {
-    String query =
-        "SELECT "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
-            + "FROM channel JOIN scheme ON channel.scheme_id_ = scheme.id_ "
-            + "WHERE scheme.namespace_ = '%s'";
-
-    Set<Channel> result = new HashSet<>();
-
-    try (Statement statement = dataSource.getConnection().createStatement()) {
-      ResultSet resultSet = statement.executeQuery(String.format(query, schemeNamespace));
-      while (resultSet.next()) result.add(Channel.map(resultSet));
-      return result;
-    }
-  }
-
-  @Override
-  public Set<Channel> findBySchemeFullName(String schemeName, String schemeNamespace)
-      throws SQLException {
-    String query =
-        "SELECT "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
-            + "FROM channel JOIN scheme ON channel.scheme_id_ = scheme.id_ "
-            + "WHERE scheme.name_ = '%s' AND scheme.namespace_ = '%s'";
-
-    Set<Channel> result = new HashSet<>();
-
-    try (Statement statement = dataSource.getConnection().createStatement()) {
-      ResultSet resultSet =
-          statement.executeQuery(String.format(query, schemeName, schemeNamespace));
       while (resultSet.next()) result.add(Channel.map(resultSet));
       return result;
     }
@@ -106,17 +66,27 @@ public class DefaultChannelRepository implements ChannelRepository {
   public Optional<Channel> findByTopic(String topic) throws SQLException {
     String query =
         "SELECT "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM channel JOIN scheme ON channel.scheme_id_ = scheme.id_ "
             + "WHERE channel.topic_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
       ResultSet resultSet = statement.executeQuery(String.format(query, topic));
       return Optional.ofNullable(resultSet.next() ? Channel.map(resultSet) : null);
+    }
+  }
+
+  @Override
+  public boolean existsBySchemeId(UUID schemeId) throws SQLException {
+    String query = "SELECT COUNT(*) FROM channel WHERE scheme_id_ = '%s'";
+
+    try (Statement statement = dataSource.getConnection().createStatement()) {
+      ResultSet resultSet = statement.executeQuery(String.format(query, schemeId.toString()));
+      return resultSet.next() && resultSet.getInt("count") != 0;
     }
   }
 
@@ -145,7 +115,8 @@ public class DefaultChannelRepository implements ChannelRepository {
     String query = "INSERT INTO channel VALUES ('%s', '%s')";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      statement.executeUpdate(String.format(query, channel.getTopic(), channel.getScheme().getId().toString()));
+      statement.executeUpdate(
+          String.format(query, channel.getTopic(), channel.getScheme().getId().toString()));
     }
   }
 
@@ -154,7 +125,8 @@ public class DefaultChannelRepository implements ChannelRepository {
     String query = "UPDATE channel SET scheme_id_ = '%s' WHERE topic_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      statement.executeUpdate(String.format(query, channel.getScheme().getId().toString(), channel.getTopic()));
+      statement.executeUpdate(
+          String.format(query, channel.getScheme().getId().toString(), channel.getTopic()));
     }
   }
 

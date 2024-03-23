@@ -1,5 +1,8 @@
 package org.blab.blender.registry;
 
+import org.blab.blender.registry.validation.ServiceNameValidator;
+import org.blab.blender.registry.validation.ValidationException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
@@ -8,83 +11,47 @@ import java.util.Optional;
 import java.util.Objects;
 
 public class Service {
-  /** Hard service identifier. */
   private final UUID id;
-
-  /** Soft service identifier. */
-  private String name;
-
-  /** Access key for owned channels. */
-  private String key;
-
-  /** List of output definitions. */
-  private Set<Channel> outs;
-
-  /** Configuration definition. */
-  private Optional<Channel> cfg;
+  private final String name;
+  private final String identificationKey;
+  private final Set<Channel> outputChannels;
+  private Channel configurationChannel;
 
   /**
    * @throws NullPointerException if required arguments is null.
-   * @throws ValidationException  if name is invalid.
+   * @throws ValidationException if name is invalid.
    */
-  public Service(
-          String name,
-          String key,
-          Set<Channel> outs,
-          Channel cfg
-  ) {
-    this(UUID.randomUUID(), name, key, outs, cfg);
+  public Service(String name, Set<Channel> outputChannels, Channel configurationChannel) {
+    this(
+        UUID.randomUUID(),
+        name,
+        UUID.randomUUID().toString(),
+        outputChannels,
+        configurationChannel);
   }
 
-  public static Service map(ResultSet resultSet, Set<Channel> outs) throws SQLException {
+  public static Service map(ResultSet resultSet, Set<Channel> outputChannels) throws SQLException {
     return new Service(
-            UUID.fromString(resultSet.getString("service_id_")),
-            resultSet.getString("service_name_"),
-            resultSet.getString("key_"),
-            outs,
-            Channel.map(resultSet)
-    );
+        UUID.fromString(resultSet.getString("service_id_")),
+        resultSet.getString("service_name_"),
+        resultSet.getString("service_key_"),
+        outputChannels,
+        resultSet.getString("scheme_id_") == null ? null : Channel.map(resultSet));
   }
 
-  /**
-   * @throws NullPointerException if required arguments is null.
-   * @throws ValidationException  if name is invalid.
-   */
   private Service(
       UUID id,
       String name,
-      String key,
-      Set<Channel> outs,
-      Channel cfg) {
-    if (Objects.isNull(id) || Objects.isNull(outs))
-      throw new NullPointerException();
+      String identificationKey,
+      Set<Channel> outputChannels,
+      Channel configurationChannel) {
+    if (Objects.isNull(outputChannels)) throw new NullPointerException();
 
     this.id = id;
-    this.name = validateName(name);
-    this.key = key;
-    this.outs = outs;
-    this.cfg = Optional.ofNullable(cfg);
-  }
-
-  private String validateName(String name) {
-    if (Objects.isNull(name))
-      throw new NullPointerException();
-
-    if (name.isBlank())
-      throw new ValidationException("Name must be non-empty.");
-
-    return name;
-  }
-
-  /**
-   * @throws NullPointerException if required arguments is null.
-   * @throws ValidationException  if name is invalid.
-   */
-  public Service(
-      String name,
-      Set<Channel> outs,
-      Channel cfg) {
-    this(UUID.randomUUID(), name, UUID.randomUUID().toString(), outs, cfg);
+    this.name = ServiceNameValidator.validate(name);
+    this.identificationKey = identificationKey;
+    this.outputChannels = outputChannels;
+    this.configurationChannel = configurationChannel;
   }
 
   public UUID getId() {
@@ -95,28 +62,45 @@ public class Service {
     return this.name;
   }
 
-  public String getKey() {
-    return this.key;
+  public String getIdentificationKey() {
+    return this.identificationKey;
   }
 
-  public Channel[] getOutsArray() {
-    return this.outs.stream().map(Channel::clone).toArray(Channel[]::new);
+  public Channel[] getOutputChannels() {
+    return this.outputChannels.stream().map(Channel::clone).toArray(Channel[]::new);
   }
 
-  public Optional<Channel> getCfg() {
-    return this.cfg.isPresent() ? Optional.of(cfg.get().clone()) : Optional.empty();
+  public Optional<Channel> getConfigurationChannel() {
+    return Optional.ofNullable(this.configurationChannel);
   }
 
-  public void addOut(Channel channel) {
-    this.outs.add(channel);
+  public void linkOutputChannel(Channel channel) {
+    this.outputChannels.add(channel);
   }
 
-  public void removeOut(Channel channel) {
-    this.outs.remove(channel);
+  public void unlinkOutputChannel(String topic) {
+    this.outputChannels.removeIf(channel -> channel.getTopic().equals(topic));
   }
 
-  public void setCfgChannel(Channel channel) {
-    this.cfg = Optional.ofNullable(channel);
+  public void setConfigurationChannel(Channel channel) {
+    this.configurationChannel = channel;
+  }
+
+  @Override
+  public String toString() {
+    return "Service{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", identificationKey='"
+        + identificationKey
+        + '\''
+        + ", outputChannels="
+        + outputChannels
+        + ", configurationChannel="
+        + configurationChannel
+        + '}';
   }
 }
-

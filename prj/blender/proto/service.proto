@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.blab.blender.registry;
+
+import "channel.proto";
+
+message Service {
+  string id = 1; // required
+  string name = 2; // required
+  string identification_key = 3; // required
+  repeated Channel output_channels = 4; // required
+  optional Channel configuration_channel = 5;
+}
+
+message ServiceSet {
+ repeated Service services = 1; // required
+}
+
+message OptionalService {
+  optional Service service = 1; // required
+}

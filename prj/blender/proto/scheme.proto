@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.blab.blender.registry;
+
+message Scheme {
+  string id = 1; // required
+  string schema = 2; // required
+  string name = 3; // required
+  string namespace = 4; // required
+}
+
+message FullName {
+  string name = 1; // required
+  string namespace = 2; // required
+}
+
+message SchemeSet {
+  repeated Scheme schemes = 1; // required
+}
+
+message OptionalScheme {
+  optional Scheme scheme = 1;
+}

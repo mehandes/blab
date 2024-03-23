@@ -1,16 +1,21 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.repository.sql;
+
+import org.blab.blender.registry.Channel;
+import org.blab.blender.registry.Service;
+import org.blab.blender.registry.repository.ServiceRepository;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class DefaultServiceRepository implements ServiceRepository {
+public class SQLServiceRepository implements ServiceRepository {
   private final DataSource dataSource;
 
-  public DefaultServiceRepository(DataSource dataSource) {
+  public SQLServiceRepository(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
@@ -20,15 +25,15 @@ public class DefaultServiceRepository implements ServiceRepository {
         "SELECT "
             + "service.id_ AS service_id_, "
             + "service.name_ AS service_name_, "
-            + "service.key_, "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "service.key_ AS service_key_, "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM service "
-            + "JOIN channel ON cfg_channel_topic_ = channel.topic_ "
-            + "JOIN scheme ON scheme_id_ = scheme.id_;";
+            + "LEFT JOIN channel ON cfg_channel_topic_ = channel.topic_ "
+            + "LEFT JOIN scheme ON scheme_id_ = scheme.id_;";
 
     Set<Service> result = new HashSet<>();
 
@@ -43,24 +48,24 @@ public class DefaultServiceRepository implements ServiceRepository {
   }
 
   @Override
-  public Optional<Service> findByOutChannelTopic(String topic) throws SQLException {
+  public Optional<Service> findByOutputChannel(String channelTopic) throws SQLException {
     String query =
         "SELECT "
             + "service.id_ AS service_id_, "
             + "service.name_ AS service_name_, "
-            + "service.key_, "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "service.key_ AS service_key_, "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM service "
-            + "JOIN channel ON cfg_channel_topic_ = channel.topic_ "
-            + "JOIN scheme ON scheme_id_ = scheme.id_ "
+            + "LEFT JOIN channel ON cfg_channel_topic_ = channel.topic_ "
+            + "LEFT JOIN scheme ON scheme_id_ = scheme.id_ "
             + "WHERE service.id_ = (SELECT service_id_ FROM service_out WHERE channel_topic_ = '%s')";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      ResultSet resultSet = statement.executeQuery(String.format(query, topic));
+      ResultSet resultSet = statement.executeQuery(String.format(query, channelTopic));
       return Optional.ofNullable(
           resultSet.next()
               ? Service.map(resultSet, queryOuts(resultSet.getString("service_id_")))
@@ -69,26 +74,26 @@ public class DefaultServiceRepository implements ServiceRepository {
   }
 
   @Override
-  public Set<Service> findByChannelTopic(String topic) throws SQLException {
+  public Set<Service> findByConfigurationChannel(String channelTopic) throws SQLException {
     String query =
         "SELECT "
             + "service.id_ AS service_id_, "
             + "service.name_ AS service_name_, "
-            + "service.key_, "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "service.key_ AS service_key_, "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM service "
-            + "JOIN channel ON cfg_channel_topic_ = channel.topic_ "
-            + "JOIN scheme ON scheme_id_ = scheme.id_ "
+            + "LEFT JOIN channel ON cfg_channel_topic_ = channel.topic_ "
+            + "LEFT JOIN scheme ON scheme_id_ = scheme.id_ "
             + "WHERE topic_ = '%s'";
 
     Set<Service> result = new HashSet<>();
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      ResultSet resultSet = statement.executeQuery(String.format(query, topic));
+      ResultSet resultSet = statement.executeQuery(String.format(query, channelTopic));
 
       while (resultSet.next())
         result.add(Service.map(resultSet, queryOuts(resultSet.getString("service_id_"))));
@@ -103,15 +108,15 @@ public class DefaultServiceRepository implements ServiceRepository {
         "SELECT "
             + "service.id_ AS service_id_, "
             + "service.name_ AS service_name_, "
-            + "service.key_, "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "service.key_ AS service_key_, "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM service "
-            + "JOIN channel ON cfg_channel_topic_ = channel.topic_ "
-            + "JOIN scheme ON scheme_id_ = scheme.id_ "
+            + "LEFT JOIN channel ON cfg_channel_topic_ = channel.topic_ "
+            + "LEFT JOIN scheme ON scheme_id_ = scheme.id_ "
             + "WHERE service.id_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
@@ -129,15 +134,15 @@ public class DefaultServiceRepository implements ServiceRepository {
         "SELECT "
             + "service.id_ AS service_id_, "
             + "service.name_ AS service_name_, "
-            + "service.key_, "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "service.key_ AS service_key_, "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM service "
-            + "JOIN channel ON cfg_channel_topic_ = channel.topic_ "
-            + "JOIN scheme ON scheme_id_ = scheme.id_ "
+            + "LEFT JOIN channel ON cfg_channel_topic_ = channel.topic_ "
+            + "LEFT JOIN scheme ON scheme_id_ = scheme.id_ "
             + "WHERE service.name_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
@@ -152,14 +157,14 @@ public class DefaultServiceRepository implements ServiceRepository {
   private Set<Channel> queryOuts(String serviceId) throws SQLException {
     String query =
         "SELECT "
-            + "channel.topic_, "
-            + "scheme.id_, "
-            + "scheme.schema_, "
-            + "scheme.name_, "
-            + "scheme.namespace_ "
+            + "channel.topic_ AS channel_topic_, "
+            + "scheme.id_ AS scheme_id_, "
+            + "scheme.schema_ AS scheme_schema_, "
+            + "scheme.name_ AS scheme_name_, "
+            + "scheme.namespace_ AS scheme_namespace_ "
             + "FROM service_out "
-            + "JOIN channel ON channel_topic_ = channel.topic_ "
-            + "JOIN scheme ON scheme_id_ = scheme.id_ "
+            + "LEFT JOIN channel ON channel_topic_ = channel.topic_ "
+            + "LEFT JOIN scheme ON scheme_id_ = scheme.id_ "
             + "WHERE service_id_ = '%s'";
 
     Set<Channel> result = new HashSet<>();
@@ -182,12 +187,12 @@ public class DefaultServiceRepository implements ServiceRepository {
   }
 
   @Override
-  public boolean existsByOutChannelTopic(String topic) throws SQLException {
+  public boolean existsByOutputChannel(String channelTopic) throws SQLException {
     String query =
         "SELECT COUNT(*) FROM service WHERE id_ = (SELECT service_id_ FROM service_out WHERE channel_topic_ = '%s')";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      ResultSet resultSet = statement.executeQuery(String.format(query, topic));
+      ResultSet resultSet = statement.executeQuery(String.format(query, channelTopic));
       return resultSet.next() && resultSet.getInt("count") != 0;
     }
   }
@@ -217,20 +222,22 @@ public class DefaultServiceRepository implements ServiceRepository {
     String query = "INSERT INTO service VALUES ('%s', '%s', '%s', %s)";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
-      updateOuts(
-          service.getId().toString(),
-          Arrays.stream(service.getOutsArray()).map(Channel::getTopic).collect(Collectors.toSet()),
-          statement);
-
       statement.executeUpdate(
           String.format(
               query,
               service.getId().toString(),
               service.getName(),
-              service.getKey(),
-              service.getCfg().isPresent()
-                  ? String.format("'%s'", service.getCfg().get().getTopic())
+              service.getIdentificationKey(),
+              service.getConfigurationChannel().isPresent()
+                  ? String.format("'%s'", service.getConfigurationChannel().get().getTopic())
                   : "null"));
+
+      updateOuts(
+          service.getId().toString(),
+          Arrays.stream(service.getOutputChannels())
+              .map(Channel::getTopic)
+              .collect(Collectors.toSet()),
+          statement);
     }
   }
 
@@ -241,21 +248,23 @@ public class DefaultServiceRepository implements ServiceRepository {
             + "name_ = '%s', "
             + "key_ = '%s', "
             + "cfg_channel_topic_ = %s "
-            + "WHERE id_ = '%s";
+            + "WHERE id_ = '%s'";
 
     try (Statement statement = dataSource.getConnection().createStatement()) {
       updateOuts(
           service.getId().toString(),
-          Arrays.stream(service.getOutsArray()).map(Channel::getTopic).collect(Collectors.toSet()),
+          Arrays.stream(service.getOutputChannels())
+              .map(Channel::getTopic)
+              .collect(Collectors.toSet()),
           statement);
 
       statement.executeUpdate(
           String.format(
               query,
               service.getName(),
-              service.getKey(),
-              service.getCfg().isPresent()
-                  ? String.format("'%s'", service.getCfg().get().getTopic())
+              service.getIdentificationKey(),
+              service.getConfigurationChannel().isPresent()
+                  ? String.format("'%s'", service.getConfigurationChannel().get().getTopic())
                   : "null",
               service.getId().toString()));
     }
@@ -273,19 +282,35 @@ public class DefaultServiceRepository implements ServiceRepository {
       if (!outs.remove(c)) toRemove.add(String.format("'%s'", c));
     }
 
-    if (!toRemove.isEmpty())
-      statement.executeUpdate(
+    if (!toRemove.isEmpty()) {
+      String q =
           String.format(
-              "DELETE FROM service_out WHERE channel_topic_ IN (%s)", String.join(", ", toRemove)));
+              "DELETE FROM service_out WHERE channel_topic_ IN (%s)", String.join(", ", toRemove));
 
-    if (!outs.isEmpty())
-      statement.executeUpdate(
+      Logger.getAnonymousLogger().info("Executing: " + q);
+      statement.executeUpdate(q);
+    }
+
+    if (!outs.isEmpty()) {
+      String q =
           "INSERT INTO service_out VALUES "
               + String.join(
                   ", ",
-                  outs.stream().map(c -> String.format("('%s', '%s')", serviceId, c)).toList()));
+                  outs.stream().map(c -> String.format("('%s', '%s')", serviceId, c)).toList());
+
+      Logger.getAnonymousLogger().info("Executing: " + q);
+      statement.executeUpdate(q);
+    }
   }
 
   @Override
-  public void removeById(UUID id) {}
+  public void removeById(UUID id) throws SQLException {
+    String queryDeleteService = "DELETE FROM service WHERE id_ = '%s'";
+    String queryDeleteOutputChannels = "DELETE FROM service_out WHERE service_id_ = '%s'";
+
+    try (Statement statement = dataSource.getConnection().createStatement()) {
+      statement.executeUpdate(String.format(queryDeleteOutputChannels, id));
+      statement.executeUpdate(String.format(queryDeleteService, id));
+    }
+  }
 }

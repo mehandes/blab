@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package org.blab.blender.registry;
+
+import "scheme.proto";
+
+message Channel {
+  string topic = 1; // required
+  Scheme scheme = 2; // required
+}
+
+message ChannelSet {
+  repeated Channel channels = 1; // required
+}
+
+message OptionalChannel {
+  optional Channel channel = 1; // required
+}

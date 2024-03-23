@@ -1,4 +1,4 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.repository.sql;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -8,8 +8,7 @@ public class DataSourceFactory {
   private static DataSource dataSource;
 
   public static DataSource getDataSource() {
-    if (dataSource == null)
-      dataSource = createDataSource();
+    if (dataSource == null) dataSource = createDataSource();
 
     return dataSource;
   }
@@ -26,4 +25,3 @@ public class DataSourceFactory {
     return dataSource;
   }
 }
-

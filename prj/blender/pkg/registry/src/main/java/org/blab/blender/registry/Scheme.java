@@ -6,42 +6,35 @@ import java.util.UUID;
 import java.lang.Cloneable;
 
 import org.apache.avro.Schema;
+import org.blab.blender.registry.validation.SchemaValidator;
+import org.blab.blender.registry.validation.ValidationException;
 
-/** Schema by which services define outputs and configurations. */
 public class Scheme implements Cloneable {
-  /** Hard scheme identifier. */
   private final UUID id;
-
   private String schema;
-  private String namespace;
   private String name;
+  private String namespace;
 
   /**
-   * @throws ValidationException if schema if invalid.
    * @throws NullPointerException if schema is null.
+   * @throws ValidationException if schema if invalid.
    */
   public Scheme(String schema) {
     this(UUID.randomUUID(), schema);
+  }
+
+  public static Scheme map(ResultSet resultSet) throws SQLException {
+    return new Scheme(
+        UUID.fromString(resultSet.getString("scheme_id_")), resultSet.getString("scheme_schema_"));
   }
 
   private Scheme(UUID id, String schema) {
     Schema parsed = SchemaValidator.validate(schema);
 
     this.id = id;
-    this.schema = schema;
-    this.name = parsed.getName();
-    this.namespace = parsed.getNamespace();
+    setSchema(schema);
   }
 
-  public static Scheme map(ResultSet resultSet) throws SQLException {
-    return new Scheme(
-            UUID.fromString(resultSet.getString("id_")), resultSet.getString("schema_"));
-  }
-
-  /**
-   * @throws ValidationException if schema is invalid.
-   * @throws NullPointerException if schema is null.
-   */
   public void setSchema(String schema) {
     Schema parsed = SchemaValidator.validate(schema);
 
@@ -58,14 +51,12 @@ public class Scheme implements Cloneable {
     return this.schema;
   }
 
-  /** Retrieve schema namespace. */
-  public String getNamespace() {
-    return this.namespace;
-  }
-
-  /** Retrieve schema name. */
   public String getName() {
     return this.name;
+  }
+
+  public String getNamespace() {
+    return this.namespace;
   }
 
   @Override
@@ -75,11 +66,18 @@ public class Scheme implements Cloneable {
 
   @Override
   public String toString() {
-    return "Scheme{" +
-            "id=" + id +
-            ", schema='" + schema + '\'' +
-            ", namespace='" + namespace + '\'' +
-            ", name='" + name + '\'' +
-            '}';
+    return "Scheme{"
+        + "id="
+        + id
+        + ", schema='"
+        + schema
+        + '\''
+        + ", namespace='"
+        + namespace
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + '}';
   }
 }

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package org.blab.blender.registry;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+import "service.proto";
+
+service ServiceController {
+  rpc FindAll(google.protobuf.Empty) returns (ServiceSet);
+  rpc FindByConfigurationChannel(google.protobuf.StringValue) returns (ServiceSet);
+  rpc FindById(google.protobuf.StringValue) returns (OptionalService);
+  rpc FindByName(google.protobuf.StringValue) returns (OptionalService);
+  rpc FindByOutputChannel(google.protobuf.StringValue) returns (OptionalService);
+  rpc ExistsById(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+  rpc ExistsByName(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+  rpc ExistsByOutputChannel(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+  rpc ExistsByConfigurationChannel(google.protobuf.StringValue) returns (google.protobuf.BoolValue);
+  rpc Count(google.protobuf.Empty) returns (google.protobuf.UInt32Value);
+  rpc Create(Service) returns (google.protobuf.Empty);
+  rpc Update(Service) returns (google.protobuf.Empty);
+  rpc RemoveById(google.protobuf.StringValue) returns (google.protobuf.Empty);
+}

@@ -1,4 +1,4 @@
-package org.blab.blender.registry;
+package org.blab.blender.registry.validation;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Parser;
